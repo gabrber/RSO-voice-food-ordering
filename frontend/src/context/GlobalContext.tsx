@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-const GlobalContext = React.createContext([{}, () => {}]);
+import React, { useReducer } from "react";
+import { globalReducer } from "./reducers";
 
-const GlobalContextProvider = (props: any) => {
-  const [state, setState] = useState("kappa");
+const GlobalContext = React.createContext<any[]>([]);
+
+const GlobalContextProvider: React.FC = ({ children }) => {
+  const context = useReducer(globalReducer, { menu: [] });
   return (
-    <GlobalContext.Provider value={[state, setState]}>
-      {props.children}
-    </GlobalContext.Provider>
+    <GlobalContext.Provider value={context}>{children}</GlobalContext.Provider>
   );
 };
 
