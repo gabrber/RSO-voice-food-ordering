@@ -11,5 +11,6 @@
       "autoFix": true
     }
   ],
-  "eslint.enable": true
+  "eslint.enable": true,
+  "prettier.singleQuote": true
 }

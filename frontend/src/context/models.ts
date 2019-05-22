@@ -3,10 +3,28 @@ export interface PizzaModel {
   name?: string;
   price_small?: number;
   price_big?: number;
-  ingredients?: [string];
+  ingredients?: string[];
   pizza_img?: string;
 }
 
-export interface MenuModel {
+export interface GlobalModel {
   menu: PizzaModel[];
+  orders: OrdersModel[];
+}
+
+export interface OrdersModel {
+  id: number;
+  orders: [
+    {
+      id: number;
+      name: string;
+      size: string;
+    }
+  ];
+  address: {
+    city: string;
+    street: string;
+    building: string;
+    flat: string;
+  };
 }

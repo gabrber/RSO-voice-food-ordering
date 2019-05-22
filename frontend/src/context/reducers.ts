@@ -1,7 +1,7 @@
-import { ADD_MENU_ITEM, ActionTypes } from "./actions";
-import { MenuModel } from "./models";
+import { ADD_MENU_ITEM, ActionTypes } from './actions';
+import { GlobalModel } from './models';
 
-export const globalReducer: React.Reducer<MenuModel, ActionTypes> = (
+export const globalReducer: React.Reducer<GlobalModel, ActionTypes> = (
   state,
   action
 ) => {
