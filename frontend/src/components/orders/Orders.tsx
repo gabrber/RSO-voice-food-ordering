@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
-  Typography,
   Table,
   TableHead,
   TableRow,
@@ -10,6 +9,41 @@ import {
 import { useGlobalContext } from '../../context/GlobalContext';
 import { OrdersModel } from '../../context/models';
 import { addNewOrder, setNewMenu } from '../../context/actions';
+import MaterialTable from 'material-table';
+
+const columns = [
+  { title: 'ID', field: 'id' },
+  {
+    title: 'Zamówienie',
+    field: 'orders',
+    render: (rowData: OrdersModel) => {
+      return (
+        <ul>
+          {rowData.orders.map(order => {
+            return (
+              <li>
+                {order.id} + {order.name} + {order.size}
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+  },
+  {
+    title: 'Adres',
+    field: 'address',
+    render: (rowData: OrdersModel) => {
+      return (
+        <div>
+          {rowData.address.city}, {rowData.address.street}{' '}
+          {rowData.address.building}
+          {rowData.address.flat ? '/' + rowData.address.flat : ''}
+        </div>
+      );
+    }
+  }
+];
 
 const Orders: React.FC = () => {
   const { state, dispatch } = useGlobalContext();
@@ -25,39 +59,7 @@ const Orders: React.FC = () => {
   }, [state.socket, dispatch]);
 
   return (
-    <Table>
-      <TableHead>
-        <TableRow>
-          <TableCell>Id</TableCell>
-          <TableCell>Zamówienie</TableCell>
-          <TableCell>Adres</TableCell>
-        </TableRow>
-      </TableHead>
-      <TableBody>
-        {state.orders.map((order: OrdersModel) => (
-          <TableRow key={order.id}>
-            <TableCell component="th" scope="row">
-              {order.id}
-            </TableCell>
-            <TableCell>
-              {order.orders.map((orderItem: OrdersModel['orders'][0]) => {
-                return (
-                  <p>
-                    {orderItem.id} + {orderItem.name} + {orderItem.size}
-                  </p>
-                );
-              })}
-            </TableCell>
-            <TableCell>
-              <div>
-                {order.address.city}, {order.address.street}{' '}
-                {order.address.building}/{order.address.flat}
-              </div>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+    <MaterialTable title="Zamówienia" columns={columns} data={state.orders} />
   );
 };
 

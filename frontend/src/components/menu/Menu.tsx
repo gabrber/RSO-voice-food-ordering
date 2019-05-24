@@ -1,14 +1,7 @@
-import React, { useContext, useEffect, useState } from 'react';
-import openSocket from 'socket.io-client';
+import React, { useEffect } from 'react';
+import MaterialTable from 'material-table';
 
-import {
-  Table,
-  TableHead,
-  TableCell,
-  TableBody,
-  TableRow,
-  Button
-} from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
 import { setNewMenu } from '../../context/actions';
@@ -28,6 +21,47 @@ const useStyles = makeStyles({
   }
 });
 
+const columns = [
+  {
+    title: 'Zdjęcie',
+    field: 'pizza_img',
+    render: (rowData: PizzaModel) => (
+      <img
+        src={rowData.pizza_img}
+        alt="pizza"
+        style={{ width: '100px', borderRadius: '50%' }}
+      />
+    )
+  },
+  { title: 'ID', field: 'id' },
+  { title: 'Nazwa', field: 'name' },
+  {
+    title: 'Cena',
+    field: 'price_small',
+    render: (rowData: PizzaModel) => {
+      return (
+        <div>
+          {rowData.price_small} <br />
+          {rowData.price_big}
+        </div>
+      );
+    }
+  },
+  {
+    title: 'Składnki',
+    field: 'ingredients',
+    render: (rowData: PizzaModel) => {
+      return (
+        <ul>
+          {rowData.ingredients.map(ingredient => {
+            return <li>{ingredient}</li>;
+          })}
+        </ul>
+      );
+    }
+  }
+];
+
 const Menu: React.FC = () => {
   const classes = useStyles();
   const { state, dispatch } = useGlobalContext();
@@ -43,37 +77,7 @@ const Menu: React.FC = () => {
 
   return (
     <div>
-      <Table className={classes.tableRoot}>
-        <TableHead>
-          <TableRow>
-            <TableCell>Zdjęcie</TableCell>
-            <TableCell>Id</TableCell>
-            <TableCell>Nazwa</TableCell>
-            <TableCell>Cena</TableCell>
-            <TableCell>Składniki</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {state.menu.map((menuItem: PizzaModel) => (
-            <TableRow key={menuItem.id}>
-              <TableCell component="th" scope="row">
-                <img src={menuItem.pizza_img} alt="margherita" />
-              </TableCell>
-              <TableCell>{menuItem.id}</TableCell>
-              <TableCell>{menuItem.name}</TableCell>
-              <TableCell>
-                {menuItem.price_small} <br />
-                {menuItem.price_big}
-              </TableCell>
-              <TableCell className={classes.ingredients}>
-                {menuItem.ingredients.map(ingredient => {
-                  return <p>{ingredient}</p>;
-                })}
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+      <MaterialTable title="Menu" columns={columns} data={state.menu} />
 
       <Button onClick={() => state.socket.emit('new_menu')}>Kappa</Button>
     </div>
