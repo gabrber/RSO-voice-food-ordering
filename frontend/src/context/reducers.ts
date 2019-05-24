@@ -1,4 +1,4 @@
-import { ADD_MENU_ITEM, ActionTypes } from './actions';
+import { ActionTypes, SET_NEW_MENU, ADD_NEW_ORDER } from './actions';
 import { GlobalModel } from './models';
 
 export const globalReducer: React.Reducer<GlobalModel, ActionTypes> = (
@@ -6,9 +6,17 @@ export const globalReducer: React.Reducer<GlobalModel, ActionTypes> = (
   action
 ) => {
   switch (action.type) {
-    case ADD_MENU_ITEM:
+    case SET_NEW_MENU:
       return Object.assign({}, state, {
-        menu: state.menu.concat(action.payload)
+        menu: action.payload
       });
+
+    case ADD_NEW_ORDER:
+      return Object.assign({}, state, {
+        orders: state.orders.concat(action.payload)
+      });
+
+    default:
+      return state;
   }
 };

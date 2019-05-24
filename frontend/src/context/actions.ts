@@ -1,11 +1,19 @@
-import { PizzaModel } from "./models";
+import { PizzaModel, OrdersModel } from './models';
 
-export const ADD_MENU_ITEM = "ADD_MENU_ITEM";
+export const SET_NEW_MENU = 'SET_NEW_MENU';
+export const ADD_NEW_ORDER = 'ADD_NEW_ORDER';
 
-export const addMenuItem = (payload: PizzaModel) => {
+export const setNewMenu = (payload: PizzaModel[]) => {
   return {
-    type: ADD_MENU_ITEM,
+    type: SET_NEW_MENU,
     payload
   } as const;
 };
-export type ActionTypes = ReturnType<typeof addMenuItem>;
+
+export const addNewOrder = (payload: OrdersModel) => {
+  return {
+    type: ADD_NEW_ORDER,
+    payload
+  } as const;
+};
+export type ActionTypes = ReturnType<typeof addNewOrder | typeof setNewMenu>;

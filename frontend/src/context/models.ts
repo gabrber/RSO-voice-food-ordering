@@ -1,15 +1,10 @@
 export interface PizzaModel {
   id: number;
-  name?: string;
-  price_small?: number;
-  price_big?: number;
-  ingredients?: string[];
-  pizza_img?: string;
-}
-
-export interface GlobalModel {
-  menu: PizzaModel[];
-  orders: OrdersModel[];
+  name: string;
+  price_small: number;
+  price_big: number;
+  ingredients: string[];
+  pizza_img: string;
 }
 
 export interface OrdersModel {
@@ -27,4 +22,10 @@ export interface OrdersModel {
     building: string;
     flat: string;
   };
+}
+
+export interface GlobalModel {
+  menu: PizzaModel[];
+  orders: OrdersModel[];
+  socket: SocketIOClient.Socket;
 }

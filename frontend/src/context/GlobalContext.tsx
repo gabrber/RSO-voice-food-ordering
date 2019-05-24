@@ -1,11 +1,19 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useContext } from 'react';
 import { globalReducer } from './reducers';
-import { PizzaModel } from './models';
+import { PizzaModel, GlobalModel } from './models';
+import openSocket from 'socket.io-client';
+import { ActionTypes } from './actions';
 
-const GlobalContext = React.createContext<any>({
-  menu: [{}],
-  orders: []
-});
+const initialState: GlobalModel = {
+  menu: [],
+  orders: [],
+  socket: openSocket('http://localhost:9999')
+};
+
+const GlobalContext = React.createContext<GlobalModel>(initialState);
+const DispatchContext = React.createContext<React.Dispatch<ActionTypes>>(
+  () => 0
+);
 
 const defaultPizza: PizzaModel = {
   id: 1,
@@ -17,14 +25,19 @@ const defaultPizza: PizzaModel = {
   price_small: 20
 };
 
-const GlobalContextProvider: React.FC = ({ children }) => {
-  const context = useReducer(globalReducer, {
-    menu: [defaultPizza],
-    orders: []
-  });
+export const GlobalContextProvider: React.FC = ({ children }) => {
+  const [state, dispatch] = useReducer(globalReducer, initialState);
   return (
-    <GlobalContext.Provider value={context}>{children}</GlobalContext.Provider>
+    <GlobalContext.Provider value={state}>
+      <DispatchContext.Provider value={dispatch}>
+        {children}
+      </DispatchContext.Provider>
+    </GlobalContext.Provider>
   );
 };
 
-export { GlobalContext, GlobalContextProvider };
+export const useGlobalContext = () => {
+  const state = useContext(GlobalContext);
+  const dispatch = useContext(DispatchContext);
+  return { state, dispatch };
+};
