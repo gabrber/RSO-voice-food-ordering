@@ -1,0 +1,31 @@
+{
+  "name": "nlp-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "@types/body-parser": "^1.17.0",
+    "@types/express": "^4.16.1",
+    "@types/mongodb": "^3.1.26",
+    "@types/mongoose": "^5.3.27",
+    "actions-on-google": "^2.6.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.5.5",
+    "reflect-metadata": "^0.1.13",
+    "ts-node": "^8.1.0",
+    "typeorm": "^0.2.17",
+    "typescript": "^3.4.3"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc --outDir dist/",
+    "start": "ts-node src/server.ts",
+    "watch": "nodemon --exec npm start"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}
