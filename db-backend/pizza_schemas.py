@@ -19,7 +19,7 @@ menu_schema = {
     }
 }
 
-new_order_schema = {
+new_order_schema_w_id = {
     "type": "object",
     "required": ["order_id", "state", "orders"],
     "properties": {
@@ -40,10 +40,39 @@ new_order_schema = {
             "type": "object",
             "required": ["city", "street", "building", "flat"],
             "properties": {
-                "city": {"type":"string"},
-                "street": {"type":"string"},
-                "building": {"type":"string"},
-                "flat": {"type":"string"}
+                "city": {"type": "string"},
+                "street": {"type": "string"},
+                "building": {"type": "string"},
+                "flat": {"type": "string"}
+            }
+        }
+    }
+}
+
+new_order_schema_wo_id = {
+    "type": "object",
+    "required": ["state", "orders"],
+    "properties": {
+        "state": {"type": "string"},
+        "orders": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["pizza", "size"],
+                "properties": {
+                    "pizza": {"type":"string"},
+                    "size": {"type":"string"}
+                }
+            }
+        },
+        "address": {
+            "type": "object",
+            "required": ["city", "street", "building", "flat"],
+            "properties": {
+                "city": {"type": "string"},
+                "street": {"type": "string"},
+                "building": {"type": "string"},
+                "flat": {"type": "string"}
             }
         }
     }
@@ -79,7 +108,7 @@ update_order_schema = {
     "type": "object",
     "required": ["order_id", "state"],
     "properties": {
-        "order_id": {"type": "string"},
+        "order_id": {"type": "integer"},
         "state": {"type": "string"}
     }
 }
