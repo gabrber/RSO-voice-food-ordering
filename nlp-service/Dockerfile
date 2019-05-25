@@ -1,6 +1,6 @@
 FROM node:11
 
-WORKDIR /usr/src/nlpservice
+WORKDIR ~/containers/nlpservice
 
 COPY package*.json ./
 
