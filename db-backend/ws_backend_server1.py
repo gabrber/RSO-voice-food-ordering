@@ -41,12 +41,14 @@ async def new_order_channel(websocket, path):
     orders.insert(new_order)
     print("Database updated")
     new_order.pop('_id', None)
+
     # inform Frontend about new order
     async with websockets.connect("ws://localhost:9003") as socket:
         await socket.send(json.dumps(new_order))
         print("Order passed to Frontend")
         front_response = await socket.recv()
         print(f"Received response from Frontend: <<{front_response}>>")
+    # TODO: jesli odpowiedz jest ze accepted to wyslac id nlpowi a jak denied to wyslac mu -1 czy cos.
     await websocket.send(json.dumps({"order_id": new_order_id}))
     print(f"frontend response <<{front_response}>>")
     print("=========== End of function ===========")
