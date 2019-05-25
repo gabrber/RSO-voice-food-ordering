@@ -1,12 +1,10 @@
 FROM node:11
 
-WORKDIR /usr/src/nlpservice
+WORKDIR /home/node/nlpservice
 
 COPY package*.json ./
 
 USER node
-
-RUN sudo chmod -R 777 /usr/src
 
 RUN npm install
 
