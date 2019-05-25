@@ -1,10 +1,10 @@
 FROM node:11
 
+USER node
+
 WORKDIR /home/node/nlpservice
 
 COPY package*.json ./
-
-USER node
 
 RUN npm install
 
