@@ -31,11 +31,15 @@ const order = {
 
 var num = 1;
 
-io.on("connection", function(socket) {
+io.on("connection", function (socket) {
   console.log("hello");
-  socket.on("new_menu", () => {
+  socket.on("get_menu", () => {
     socket.emit("menu", menu);
   });
+
+  socket.on('new_menu', (new_menu) => {
+    socket.emit('menu', new_menu)
+  })
 
   // setInterval(() => {
   //   console.log("WYSYLYM NEW ORDER");
