@@ -1,6 +1,6 @@
 menu_schema = {
     "type": "array",
-    "items":{
+    "items": {
         "type": "object",
         "required": ["menu_id", "name", "price_small", "price_big", "ingredients", "pizza_img"],
         "properties": {

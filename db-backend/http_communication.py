@@ -29,6 +29,7 @@ app.config['MONGO_URI'] = 'mongodb://rwUser:pizza123@46.101.104.71:27017/pizza_d
 db = 'pizza_db'
 mongo = PyMongo(app)
 
+
 @app.route('/', methods=['GET'])
 def index():
     query = request.get_json(force=True)
@@ -37,6 +38,7 @@ def index():
 
     result = pizzas.find(query)
     return dumps(result)
+
 
 @app.route('/order', methods=['POST'])
 def post_order():
@@ -50,13 +52,42 @@ def post_order():
     
     orders = mongo.db.orders
     orders.insert(new_order)
-    return "Added"
+    return "Added new order"
+
+
+@app.route('/new_menu', methods=['POST'])
+def new_menu():
+    # get new menu
+    new_menu = request.get_json(force=True)
+
+    # validate it against json schema
+    try:
+        jsonschema.validate(instance=new_menu, schema=pizza_schemas.menu_schema)
+    except jsonschema.ValidationError:
+        print("JSON Validation Error, bad data. Entry not added do DB")
+        return "JSON Validation Error, bad data. Entry not added do DB"
+    print(new_menu)
+
+    # update database
+    old_menu = mongo.db.pizzas.find_one({})
+    mongo.db.pizzas.remove(old_menu)
+    mongo.db.pizzas.insert(new_menu)
+
+    # # inform NLP about change in menu
+    # url_to_nlp_endpoint = 'http://someurl/update_menu'
+    # nlp_credentials = {"api_dev_key": "XXX"}
+    # r = requests.post(url_to_nlp_endpoint, nlp_credentials, dumps(new_menu))
+    # print(f"NLP responsed: {r}")
+
+    return "Removed old menu and inserted new"
+
 
 @app.route('/get_menu', methods=['GET'])
 def get_menu():
     menu = mongo.db.menu
     result = menu.find({})
     return dumps(result)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
