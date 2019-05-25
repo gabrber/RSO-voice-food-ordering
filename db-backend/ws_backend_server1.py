@@ -20,7 +20,7 @@ async def new_order_channel(websocket, path):
 
     # validate new order against json schema
     try:
-        jsonschema.validate(instance=new_order, schema=pizza_schemas.test_schema)
+        jsonschema.validate(instance=new_order, schema=pizza_schemas.new_order_schema)
     except jsonschema.ValidationError:
         print("JSON Validation Error, bad data. Entry not added do DB")
         return "JSON Validation Error, bad data. Entry not added do DB"
@@ -32,12 +32,33 @@ async def new_order_channel(websocket, path):
     await websocket.send("Order inserted into DB")
 
     # inform Frontend about new order
-    async with websockets.connect("ws://localhost:9002") as socket:
+    async with websockets.connect("ws://localhost:9003") as socket:
         msg = {"test_msg": "2"}
         await socket.send(json.dumps(msg))
         print(await socket.recv())
 
 
-start_server = websockets.serve(new_order_channel, 'localhost', 9001)
-asyncio.get_event_loop().run_until_complete(start_server)
+async def update_order_channel(websocket, path):
+    # read new order from NLP backend
+    new_update = await websocket.recv()
+    new_update = json.loads(new_update)
+
+    # validate new order against json schema
+    try:
+        jsonschema.validate(instance=new_update, schema=pizza_schemas.update_order_schema)
+    except jsonschema.ValidationError:
+        print("JSON Validation Error, bad data. Entry not added do DB")
+        return "JSON Validation Error, bad data. Entry not added do DB"
+    print(new_update)
+
+    query = {"order_id": new_update["order_id"]}
+    order_to_update = mongo.db.orders.find_one(query)
+    order_to_update["state"] = new_update["state"]
+    mongo.db.orders.save(order_to_update)
+    await websocket.send("Order updated")
+
+start_server1 = websockets.serve(new_order_channel, 'localhost', 9001)
+start_server2 = websockets.serve(update_order_channel, 'localhost', 9002)
+asyncio.get_event_loop().run_until_complete(start_server1)
+asyncio.get_event_loop().run_until_complete(start_server2)
 asyncio.get_event_loop().run_forever()
