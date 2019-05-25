@@ -6,8 +6,6 @@ COPY package*.json ./
 
 USER root
 
-RUN sudo chmod -R 777 /usr/src
-
 RUN npm install
 
 COPY . .
