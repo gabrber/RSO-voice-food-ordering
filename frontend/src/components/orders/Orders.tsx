@@ -59,7 +59,16 @@ const Orders: React.FC = () => {
   }, [state.socket, dispatch]);
 
   return (
-    <MaterialTable title="Zamówienia" columns={columns} data={state.orders} />
+    <MaterialTable
+      title="Zamówienia"
+      columns={columns}
+      data={state.orders}
+      localization={{
+        body: {
+          emptyDataSourceMessage: 'Brak pozycji'
+        }
+      }}
+    />
   );
 };
 

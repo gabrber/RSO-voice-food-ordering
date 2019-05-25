@@ -36,16 +36,12 @@ const columns = [
   { title: 'ID', field: 'id' },
   { title: 'Nazwa', field: 'name' },
   {
-    title: 'Cena',
-    field: 'price_small',
-    render: (rowData: PizzaModel) => {
-      return (
-        <div>
-          {rowData.price_small} <br />
-          {rowData.price_big}
-        </div>
-      );
-    }
+    title: 'Cena mała',
+    field: 'price_small'
+  },
+  {
+    title: 'Cena duża',
+    field: 'price_big'
   },
   {
     title: 'Składnki',
@@ -67,6 +63,7 @@ const Menu: React.FC = () => {
   const { state, dispatch } = useGlobalContext();
 
   useEffect(() => {
+    state.socket.emit('get_menu');
     state.socket.on('menu', (menu: PizzaModel[]) => {
       dispatch(setNewMenu(menu));
     });
@@ -77,9 +74,72 @@ const Menu: React.FC = () => {
 
   return (
     <div>
-      <MaterialTable title="Menu" columns={columns} data={state.menu} />
+      <MaterialTable
+        editable={{
+          onRowAdd: newData =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                const newMenu = state.menu.concat([
+                  {
+                    id: Number(newData.id) | 0,
+                    name: String(newData.name),
+                    pizza_img: String(newData.pizza_img),
+                    ingredients: newData.ingredients
+                      ? newData.ingredients.split(',')
+                      : [],
+                    price_small: Number(newData.price_small) | 0,
+                    price_big: Number(newData.price_small) | 0
+                  } as PizzaModel
+                ]);
+                state.socket.emit('new_menu', newMenu);
+                resolve();
+              }, 1000);
+            }),
+          onRowUpdate: (newData, oldData) =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                console.log(newData);
+                console.log(oldData);
+                const oldIndex = state.menu.indexOf(oldData);
+                const newMenu = state.menu;
+                newMenu[oldIndex] = newData;
+                state.socket.emit('new_menu', newMenu);
+                resolve();
+              }, 1000);
+            }),
+          onRowDelete: oldData =>
+            new Promise((resolve, reject) => {
+              setTimeout(() => {
+                const oldIndex = state.menu.indexOf(oldData);
+                const newMenu = state.menu;
+                newMenu.splice(oldIndex, 1);
+                state.socket.emit('new_menu', newMenu);
+                resolve();
+              }, 1000);
+            })
+        }}
+        localization={{
+          header: {
+            actions: 'Akcje'
+          },
+          body: {
+            emptyDataSourceMessage: 'Brak pozycji',
+            deleteTooltip: 'Usuń',
+            addTooltip: 'Dodaj',
+            editTooltip: 'Edytuj',
+            editRow: {
+              deleteText: 'Czy na pewno chcesz usunąć pozycję?',
+              cancelTooltip: 'Nie',
+              saveTooltip: 'Tak'
+            }
+          }
+        }}
+        title="Menu"
+        columns={columns}
+        data={state.menu}
+      />
 
-      <Button onClick={() => state.socket.emit('new_menu')}>Kappa</Button>
+      <Button onClick={() => state.socket.emit('get_menu')}>Kappa</Button>
     </div>
   );
 };
