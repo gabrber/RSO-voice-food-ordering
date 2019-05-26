@@ -46,11 +46,17 @@ io.on("connection", function (socket) {
     socket.emit('new_order', { ...order, ...update })
   })
 
+  socket.on('login', (user) => {
+    console.log(user)
+    socket.emit('user', "admin")
+    socket.emit("new_order", { ...order, id: 1 });
+    socket.emit("new_order", { ...order, id: 2 });
+    socket.emit("new_order", { ...order, id: 3 });
+    socket.emit("new_order", { ...order, id: 1, status: 'przyjęte' });
+  })
 
-  socket.emit("new_order", { ...order, id: 1 });
-  socket.emit("new_order", { ...order, id: 2 });
-  socket.emit("new_order", { ...order, id: 3 });
-  socket.emit("new_order", { ...order, id: 1, status: 'przyjęte' });
+
+
 });
 
 const port = 9999;

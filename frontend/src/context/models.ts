@@ -29,4 +29,5 @@ export interface GlobalModel {
   menu: PizzaModel[];
   orders: OrdersModel[];
   socket: SocketIOClient.Socket;
+  isAdmin: boolean;
 }

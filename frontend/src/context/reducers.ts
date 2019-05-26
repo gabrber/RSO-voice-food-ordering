@@ -1,4 +1,4 @@
-import { ActionTypes, SET_NEW_MENU, ADD_NEW_ORDER } from './actions';
+import { ActionTypes, SET_NEW_MENU, ADD_NEW_ORDER, SET_ADMIN } from './actions';
 import { GlobalModel } from './models';
 
 export const globalReducer: React.Reducer<GlobalModel, ActionTypes> = (
@@ -29,6 +29,9 @@ export const globalReducer: React.Reducer<GlobalModel, ActionTypes> = (
       return Object.assign({}, state, {
         orders: state.orders.concat(action.payload)
       });
+
+    case SET_ADMIN:
+      return { ...state, isAdmin: action.payload };
 
     default:
       return state;

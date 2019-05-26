@@ -3,7 +3,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { BrowserRouter } from 'react-router-dom';
 
 import { GlobalContextProvider } from './context/GlobalContext';
-import { MainApp } from './components/MainApp';
+import MainApp from './components/MainApp';
 
 const App: React.FC = () => {
   return (

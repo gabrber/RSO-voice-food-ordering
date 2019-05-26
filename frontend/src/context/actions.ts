@@ -2,6 +2,7 @@ import { PizzaModel, OrdersModel } from './models';
 
 export const SET_NEW_MENU = 'SET_NEW_MENU';
 export const ADD_NEW_ORDER = 'ADD_NEW_ORDER';
+export const SET_ADMIN = 'SET_ADMIN';
 
 export const setNewMenu = (payload: PizzaModel[]) => {
   return {
@@ -16,4 +17,14 @@ export const addNewOrder = (payload: OrdersModel) => {
     payload
   } as const;
 };
-export type ActionTypes = ReturnType<typeof addNewOrder | typeof setNewMenu>;
+
+export const setAdmin = (payload: boolean) => {
+  return {
+    type: SET_ADMIN,
+    payload
+  } as const;
+};
+
+export type ActionTypes = ReturnType<
+  typeof addNewOrder | typeof setNewMenu | typeof setAdmin
+>;

@@ -7,7 +7,8 @@ import { ActionTypes } from './actions';
 const initialState: GlobalModel = {
   menu: [],
   orders: [],
-  socket: openSocket('http://localhost:9999')
+  socket: openSocket('http://localhost:9999'),
+  isAdmin: false
 };
 
 const GlobalContext = React.createContext<GlobalModel>(initialState);
