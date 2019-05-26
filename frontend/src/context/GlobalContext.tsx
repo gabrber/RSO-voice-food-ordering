@@ -7,7 +7,9 @@ import { ActionTypes } from './actions';
 const initialState: GlobalModel = {
   menu: [],
   orders: [],
-  socket: openSocket('http://localhost:9999'),
+  socket: process.env.REACT_APP_WEBSOCKET
+    ? openSocket(process.env.REACT_APP_WEBSOCKET)
+    : openSocket(''),
   isAdmin: false
 };
 
