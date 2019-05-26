@@ -113,6 +113,15 @@ update_order_schema = {
     }
 }
 
+get_state_schema = {
+    "type": "object",
+    "required": ["order_id", "request_id"],
+    "properties": {
+        "order_id": {"type": "integer"},
+        "request_id": {"type": "integer"}
+    }
+}
+
 # new_menu = {
 #   "id": "asd",
 #   "orders": [{

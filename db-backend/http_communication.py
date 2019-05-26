@@ -5,7 +5,7 @@ from flask_pymongo import PyMongo
 from bson.json_util import dumps
 import pizza_schemas
 import jsonschema
-
+import json
 
 app = Flask(__name__)
 app.config['MONGO_DBNAME'] = 'pizza_db'
@@ -80,6 +80,31 @@ def get_menu():
     menu = mongo.db.menu
     result = menu.find({})
     return dumps(result)
+
+
+@app.route('/get_state', methods=['GET'])
+def get_state():
+    """
+    Endpoint for getting current order state.
+
+    Returns
+    -------
+       json
+            menu in json format
+    """
+    # get request
+    state_req = request.get_json(force=True)
+    print(type(state_req))
+    # state_req = json.loads(state_req_raw)
+    try:
+        jsonschema.validate(instance=state_req, schema=pizza_schemas.get_state_schema)
+    except jsonschema.ValidationError:
+        print("JSON Validation Error, bad data. Entry not added do DB")
+        return "JSON Validation Error, bad data. Entry not added do DB"
+
+    query_result = mongo.db.orders.find_one({"order_id": state_req["order_id"]})
+    answer = {"request_id": state_req["request_id"], "state": query_result["state"]}
+    return dumps(answer)
 
 
 if __name__ == '__main__':
