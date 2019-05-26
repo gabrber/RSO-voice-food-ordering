@@ -89,20 +89,23 @@ def get_state():
 
     Returns
     -------
-       json
-            menu in json format
+       json with request_id and current state of the requested order
+
     """
     # get request
     state_req = request.get_json(force=True)
-    print(type(state_req))
-    # state_req = json.loads(state_req_raw)
+
+    # validate
     try:
         jsonschema.validate(instance=state_req, schema=pizza_schemas.get_state_schema)
     except jsonschema.ValidationError:
         print("JSON Validation Error, bad data. Entry not added do DB")
         return "JSON Validation Error, bad data. Entry not added do DB"
 
+    # query
     query_result = mongo.db.orders.find_one({"order_id": state_req["order_id"]})
+
+    # answer
     answer = {"request_id": state_req["request_id"], "state": query_result["state"]}
     return dumps(answer)
 
