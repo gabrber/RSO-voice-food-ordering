@@ -51,7 +51,8 @@ new_order_schema_w_id = {
 
 new_order_schema_wo_id = {
     "type": "object",
-    "required": ["state", "orders"],
+    "required": ["request_id", "state", "orders"],
+    "request_id": {"type": "integer"},
     "properties": {
         "state": {"type": "string"},
         "orders": {
