@@ -8,6 +8,7 @@ async def message():
         msg = {
             "order_id": 1,
             "state": "new",
+            "request_id": 123,
             "orders": [{"pizza": "type1", "size": "normal"}],
             "address": {
                     "city": "City1",
