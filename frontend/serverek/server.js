@@ -26,7 +26,8 @@ const order = {
     street: "Kappowska",
     building: "6",
     flat: "6"
-  }
+  },
+  status: 'złożone'
 };
 
 var num = 1;
@@ -41,18 +42,15 @@ io.on("connection", function (socket) {
     socket.emit('menu', new_menu)
   })
 
-  // setInterval(() => {
-  //   console.log("WYSYLYM NEW ORDER");
-  //   num = num + 1;
-  //   let new_order = { ...order, id: num };
-  //   console.log(new_order);
-  //   socket.emit("new_order", new_order);
-  // }, 5000);
+  socket.on('update_order', (update) => {
+    socket.emit('new_order', { ...order, ...update })
+  })
+
 
   socket.emit("new_order", { ...order, id: 1 });
   socket.emit("new_order", { ...order, id: 2 });
   socket.emit("new_order", { ...order, id: 3 });
-  socket.emit("new_order", { ...order, id: 4 });
+  socket.emit("new_order", { ...order, id: 1, status: 'przyjęte' });
 });
 
 const port = 9999;

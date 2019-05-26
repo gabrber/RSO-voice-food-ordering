@@ -1,12 +1,19 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Button } from '@material-ui/core';
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  ButtonBase
+} from '@material-ui/core';
 import { Link } from 'react-router-dom';
 import { makeStyles } from '@material-ui/styles';
+import logo from '../img/pizza_logo.png';
 
 const useStyles = makeStyles({
   link: {
     textDecoration: 'none',
-    color: 'red'
+    color: 'black'
   }
 });
 
@@ -16,6 +23,11 @@ const MainAppBar: React.FC = () => {
   return (
     <AppBar position="static">
       <Toolbar>
+        <ButtonBase>
+          <Link className={classes.link} to="/">
+            <img height="30px" src={logo} alt="logo" />
+          </Link>
+        </ButtonBase>
         <Button>
           <Link className={classes.link} to="/menu">
             <Typography>Menu</Typography>

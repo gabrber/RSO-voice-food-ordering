@@ -12,6 +12,20 @@ export const globalReducer: React.Reducer<GlobalModel, ActionTypes> = (
       });
 
     case ADD_NEW_ORDER:
+      let isOldOrder = state.orders.some(
+        value => value.id === action.payload.id
+      );
+
+      if (isOldOrder) {
+        let newOrders = state.orders.map((value, index, orders) => {
+          if (action.payload.id === value.id) {
+            return action.payload;
+          } else {
+            return value;
+          }
+        });
+        return Object.assign({}, state, { orders: newOrders });
+      }
       return Object.assign({}, state, {
         orders: state.orders.concat(action.payload)
       });

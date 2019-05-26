@@ -22,6 +22,7 @@ export interface OrdersModel {
     building: string;
     flat: string;
   };
+  status: string;
 }
 
 export interface GlobalModel {

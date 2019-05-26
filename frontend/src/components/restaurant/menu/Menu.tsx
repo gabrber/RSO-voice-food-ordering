@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import MaterialTable from 'material-table';
 
-import { Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 
-import { setNewMenu } from '../../context/actions';
-import { PizzaModel } from '../../context/models';
-import { useGlobalContext } from '../../context/GlobalContext';
+import { setNewMenu } from '../../../context/actions';
+import { PizzaModel } from '../../../context/models';
+import { useGlobalContext } from '../../../context/GlobalContext';
 
 const useStyles = makeStyles({
   tableRoot: {
@@ -138,8 +137,6 @@ const Menu: React.FC = () => {
         columns={columns}
         data={state.menu}
       />
-
-      <Button onClick={() => state.socket.emit('get_menu')}>Kappa</Button>
     </div>
   );
 };
