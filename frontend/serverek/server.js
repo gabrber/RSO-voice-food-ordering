@@ -1,6 +1,10 @@
-const io = require("socket.io")();
+var cors = require('cors')()
+var app = require('express')();
+var server = require('http').Server(app)
+var io = require("socket.io")(server);
 
-io.origins(['http://46.101.104.71:3000', 'http://127.0.0.1:3000'])
+app.use(cors)
+
 
 const menu = [
   {
