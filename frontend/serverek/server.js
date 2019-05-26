@@ -1,5 +1,7 @@
 const io = require("socket.io")();
 
+io.origins(['http://localhost:3000', 'http://localhost:9999'])
+
 const menu = [
   {
     id: 1,
