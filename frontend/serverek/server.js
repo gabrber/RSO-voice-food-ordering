@@ -1,6 +1,6 @@
 const io = require("socket.io")();
 
-io.origins(['http://localhost:3000', 'http://localhost:9999'])
+io.origins(['http://46.101.104.71:3000', 'http://127.0.0.1:3000'])
 
 const menu = [
   {
