@@ -10,6 +10,6 @@ export const createOrder = (pizzas: PizzaOrderConv[], address: OrderAddress): Or
 			};
 		}),
 		phone: address.phone,
-		addressLines: address.addressLines
+		address: { ...address }
 	};
 };

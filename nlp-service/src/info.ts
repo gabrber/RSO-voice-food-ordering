@@ -1,3 +1,2 @@
-const APP_NAME = 'Zamów Pizzę';
-
-export { APP_NAME };
+export const APP_NAME = 'Teraz Pizza';
+export const RESTAURANT_BACKEND_URL = process.env.RESTAURANT_BACKEND_URL || ''

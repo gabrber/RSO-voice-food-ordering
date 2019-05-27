@@ -1,13 +1,10 @@
-interface MenuJSON {
-    items: PizzaJSON[]
-}
-
 interface PizzaJSON {
+    menu_id: string
     name: string
-    priceSmall: number
-    priceBig: number
+    price_small: number
+    price_big: number
     ingredients: string[]
-    imageUrl: string
+    image_url: string
 }
 
 interface Order {
@@ -28,4 +25,4 @@ interface SizedPizza {
     size: string
 }
 
-export { MenuJSON, PizzaJSON, Order }
+export { PizzaJSON, Order }

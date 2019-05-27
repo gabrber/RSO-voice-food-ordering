@@ -44,7 +44,10 @@ let MenuEntity = class MenuEntity {
 };
 __decorate([
     typeorm_1.ObjectIdColumn(),
-    __metadata("design:type", typeorm_1.ObjectID)
+    __metadata("design:type", typeorm_1.ObjectID
+    // @Column()
+    // remoteId: string
+    )
 ], MenuEntity.prototype, "id", void 0);
 __decorate([
     typeorm_1.Column(type => PizzaEntity),

@@ -11,10 +11,15 @@ import {
 } from 'actions-on-google/dist/service/actionssdk';
 import { PizzaOrderConv, OrderAddress } from './data/conv_data';
 import { connect } from 'net';
-import { sendOrder } from './service_backend';
+import { sendOrder, getOrderStatus } from './service_backend';
 import { createOrder } from './data/mappers';
+import { Order, OrderStatus } from './data/backend_data';
+import { getCurrentMenu } from './service_local';
+import { getMongoRepository } from 'typeorm';
 
 const ga = dialogflow();
+
+const menuRepository = () => getMongoRepository(MenuEntity);
 
 const Event = {
 	SHOW_MENU: 'show_menu_event',
@@ -25,8 +30,10 @@ const Event = {
 const Context = {
 	INIT_DECISION: 'init_decision_context',
 	ORDER_PIZZA: 'order_pizza_context',
+	ORDER_PIZZA_FALLBACK: 'order_pizza_fallback',
 	MORE_PIZZAS: 'order_more_pizzas',
-	FINISH_ORDER: 'finish_order'
+	FINISH_ORDER: 'finish_order',
+	CHOOSE_PIZZA: 'choose_pizza'
 };
 
 enum PizzaSize {
@@ -39,38 +46,67 @@ enum PizzaSize {
 ga.intent('Default Welcome Intent', (conv) => {
 	conv.ask(`Cześć. Tu aplikacja ${APP_NAME}!`);
 
-	conv.ask('Czy chcesz poznać nasze menu czy zamówić pizzę?');
-	conv.ask(new Suggestions([ 'Pokaż menu', 'Zamów pizzę' ]));
+	conv.ask('Czy chcesz poznać nasze menu czy sprawdzić status ostatniego zamówienia?');
+	conv.ask(new Suggestions([ 'Pokaż menu', 'Sprawdź status zamówienia' ]));
 
 	conv.contexts.set(Context.INIT_DECISION, 1);
+});
+
+ga.intent('Default Fallback Intent', (conv) => {
+	if (conv.contexts.get(Context.ORDER_PIZZA)) {
+		conv.contexts.set(Context.ORDER_PIZZA_FALLBACK, 1);
+		conv.followup(Event.SHOW_MENU)
+	}
+	conv.ask('Nie rozumiem. Czy możesz powtórzyć?');
 });
 
 ga.intent('want-showing-menu', (conv) => conv.followup(Event.SHOW_MENU));
 ga.intent('want-order-pizza', (conv) => conv.followup(Event.WANT_ORDER));
 
+// CHECK LATEST order status
+ga.intent('get-order-status', async (conv) => {
+	switch (await getOrderStatus(getLatestSentOrder(conv))) {
+		case OrderStatus.accepted:
+			conv.close('Twoje ostatnie zamówienie zostało przyjęte przez restaurację');
+			break;
+		case OrderStatus.preparing:
+			conv.close('Twoje ostatnie zamówienie jest przygotowywane');
+			break;
+		case OrderStatus.delivering:
+			conv.close('Twoje ostatnie zamówienie jest w drodze.');
+			break;
+		case OrderStatus.cancelled:
+			conv.close('Przepraszamy. Twoje ostatnie zamówienie zostało anulowane.');
+			break;
+	}
+});
+
 // EVENT: show menu
 
-ga.intent('show-menu', (conv) => {
+ga.intent('show-menu', async (conv) => {
+	if (conv.contexts.get(Context.ORDER_PIZZA_FALLBACK)) {
+		conv.ask('Nie rozpoznałem nazwy pizzy. Spróbuj jeszcze raz.')
+	}
 	if (conv.contexts.get(Context.MORE_PIZZAS)) {
 		const currentOrder = getCurrentOrder(conv).map((pizzaConv) => pizzaConv.name).join(', ');
-		conv.ask(`Dotychczas wybrałeś: ${currentOrder}. Jeszcze coś?`);
-		conv.ask('Wybierz pizzę');
+		conv.ask(`Dotychczas wybrałeś: ${currentOrder}. Jeszcze coś?. Wybierz pizzę`);
 	} else {
-		conv.ask('Oto nasze menu.');
-		conv.ask('Wybierz pizzę z listy, bądź powiedz jej numer. ');
+		conv.ask('Oto nasze menu. Wybierz pizzę z listy, bądź powiedz jej numer. ');
 	}
-	conv.ask(menuToListResponse(getMenu()));
+	const localMenu = await getCurrentMenu(menuRepository());
+	conv.ask(menuToListResponse(localMenu));
 	if (conv.contexts.get(Context.MORE_PIZZAS)) {
 		conv.ask(new Suggestions('To wszystko'));
 	}
 	conv.contexts.set(Context.ORDER_PIZZA, 1);
 });
 
-ga.intent('choose-pizza', (conv, params, option: string) => {
+ga.intent('choose-pizza', async (conv, params, option: string) => {
 	try {
 		const splittedOption = option.split('_');
 		const pizzaNumber = parseInt(splittedOption[1]);
-		const pizza = getMenu().items[pizzaNumber - 1];
+		const menu = await getCurrentMenu(menuRepository());
+		const pizza = menu.items[pizzaNumber - 1];
 
 		savePizzaInOrder(conv, pizza, PizzaSize.SMALL);
 
@@ -92,21 +128,24 @@ ga.intent('choose-pizza-end', (conv) => {
 			}
 		})
 	);
-	// const order = getCurrentOrder(conv).map((pizza) => pizza.name).join(', ');
-	// conv.ask(new Confirmation(`Tutaj pytamy o adres. Twoje zamówienie to: ${order}. Czy potwierdzasz zamówienie?`));
-	// conv.contexts.set(Context.ORDER_PIZZA, 1);
 });
 
 // This intent should react on actions.intent.DELIVERY_ADDRESS event
 ga.intent('delivery-address-complete', (conv) => {
 	const arg = conv.arguments.get('DELIVERY_ADDRESS_VALUE');
 	if (arg.userDecision === 'ACCEPTED') {
-		console.log('DELIVERY_ADDRESS: ' + arg.location);
-		conv.data['deliveryAddress'] = mapAddress(arg.location);
+		console.log(`Address lines: ${mapAddress(arg.location).addressLines}`)
+		console.log(`Phone: ${mapAddress(arg.location).phone}`)
+		console.log(`City: ${mapAddress(arg.location).city}`)
+		saveDeliveryAddress(conv, mapAddress(arg.location));
 
 		const order = getCurrentOrder(conv).map((pizza) => pizza.name).join(', ');
-		conv.ask(`Super. Mam twój adres. Zamawiasz: ${order}`);
-		conv.ask(new Confirmation('Czy potwierdzasz zamówienie?'));
+		const cost = getCurrentOrder(conv).reduce((aggregatedCost, pizza) => aggregatedCost + pizza.price, 0);
+
+		conv.ask(
+			new Confirmation(`Super. Mam twój adres. Zamawiasz: ${order}.
+			Koszt zamówienia wynosi: ${cost}. Czy potwierdzasz zamówienie?`)
+		);
 		conv.contexts.set(Context.ORDER_PIZZA, 1);
 	} else {
 		conv.close('Bez twojego adresu nie mogę zrealizować zamówienia.');
@@ -116,8 +155,10 @@ ga.intent('delivery-address-complete', (conv) => {
 // This intent should react on actions.intent.CONFIRMATION event
 ga.intent('finish-order', async (conv, params, confirmationGranted) => {
 	if (confirmationGranted) {
-		const order = await sendOrder(createOrder(getCurrentOrder(conv), mockAddress));
-		conv.close(`Twoje zamówienie nr ${order.order_id} zostało przekazane do realizacji`);
+		const order = await sendOrder(createOrder(getCurrentOrder(conv), getDeliveryAddress(conv)));
+		saveSentOrder(conv, order);
+
+		conv.close(`Twoje zamówienie zostało przekazane do realizacji`);
 	} else {
 		conv.close('Przykro mi, że nie mogę zrealizować twojego zamówienia.');
 	}
@@ -132,6 +173,14 @@ const getCurrentOrder = (conv: DialogflowConversation) => {
 		order = [];
 	}
 	return order;
+};
+
+const getLatestSentOrder = (conv: DialogflowConversation): string => {
+	return conv.user.storage['latestOrder'];
+};
+
+const saveSentOrder = (conv: DialogflowConversation, order: Order) => {
+	conv.user.storage['latestOrder'] = order.order_id;
 };
 
 const savePizzaInOrder = (conv: DialogflowConversation, pizza: PizzaEntity, size: PizzaSize) => {
@@ -156,7 +205,8 @@ const savePizzaInOrder = (conv: DialogflowConversation, pizza: PizzaEntity, size
 const mapAddress = ({ postalAddress, phoneNumber }: GoogleActionsV2Location): OrderAddress => {
 	return {
 		addressLines: postalAddress.addressLines,
-		phone: phoneNumber
+		phone: phoneNumber,
+		city: postalAddress.locality
 	};
 };
 
@@ -164,43 +214,15 @@ const getDeliveryAddress = (conv: DialogflowConversation) => {
 	return conv.data['deliveryAddress'];
 };
 
-const mockAddress: OrderAddress = {
-	addressLines: ['Warszawa', 'Chełmska'],
-	phone: '+48666777888'
-}
+const saveDeliveryAddress = (conv: DialogflowConversation, address: OrderAddress) => {
+	conv.data['deliveryAddress'] = address;
+};
 
-function getMenu(): MenuEntity {
-	return {
-		id: null,
-		items: [
-			{
-				id: null,
-				name: 'Margheritta',
-				priceSmall: 20.0,
-				priceBig: 30.0,
-				ingredients: [ 'ser', 'szynka' ],
-				imageUrl: 'https://www.kwestiasmaku.com/sites/kwestiasmaku.com/files/ciasto_na_pizze_00.jpg'
-			},
-			{
-				id: null,
-				name: 'Serowa',
-				priceSmall: 30.0,
-				priceBig: 30.0,
-				ingredients: [ 'ser', 'ser pleśniowy', 'mozarella' ],
-				imageUrl:
-					'https://res.cloudinary.com/bnry/image/upload/f_auto/v1551361679/romans/pizza/famished/pizza-supreme-pan'
-			},
-			{
-				id: null,
-				name: 'Czekoladowa',
-				priceSmall: 80.0,
-				priceBig: 30.0,
-				ingredients: [ 'ser', 'czekolada', 'salami', 'brokuły', 'rodzynki', 'składnik' ],
-				imageUrl: 'https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/pizza.png'
-			}
-		]
-	};
-}
+const mockAddress: OrderAddress = {
+	addressLines: [ 'Chełmska', '6/8' ],
+	phone: '+48666777888',
+	city: 'Warszawa'
+};
 
 function menuToListResponse(menu: MenuEntity): List {
 	function pizzaToItem(pizza: PizzaEntity, index: number): OptionItem {

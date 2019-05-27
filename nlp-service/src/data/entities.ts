@@ -4,7 +4,7 @@ import {Entity, ObjectID, ObjectIdColumn, Column, BaseEntity} from 'typeorm';
 class PizzaEntity {
 
     @ObjectIdColumn()
-    id: ObjectID
+    id?: ObjectID
 
     @Column()
     name: string
@@ -25,7 +25,10 @@ class PizzaEntity {
 @Entity()
 class MenuEntity {
     @ObjectIdColumn()
-    id: ObjectID
+    id?: ObjectID
+
+    // @Column()
+    // remoteId: string
 
     @Column(type => PizzaEntity)
     items: PizzaEntity[]
