@@ -87,7 +87,7 @@ const Menu: React.FC = () => {
                       ? newData.ingredients.split(',')
                       : [],
                     price_small: Number(newData.price_small) | 0,
-                    price_big: Number(newData.price_small) | 0
+                    price_big: Number(newData.price_big) | 0
                   } as PizzaModel
                 ]);
                 state.socket.emit('new_menu', newMenu);
