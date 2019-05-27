@@ -4,7 +4,8 @@ import ga from './assistant';
 import { createConnection } from 'typeorm';
 import { MenuEntity } from './data/entities';
 import { synchronize } from './service_synchronize';
-import * as https from 'https'
+import * as https from 'https';
+import * as http from 'http';
 import { readFileSync } from 'fs';
 
 async function bootstrap() {
@@ -28,11 +29,11 @@ async function bootstrap() {
 	app.post('/nlp', ga);
 
 	const PORT = process.env.PORT || 5000;
-	const HTTPS_PORT = process.env.PORT || 5001; 
+	const HTTPS_PORT = process.env.HTTPS_PORT || 5001;
 
-	app.listen(PORT).on('listening', () => {
-		console.log(`Server is running at: http://localhost:${PORT}`);
-	});
+	// app.listen(PORT).on('listening', () => {
+	// 	console.log(`Server is running at: http://localhost:${PORT}`);
+	// });
 
 	app.post('/update_menu', async (req, res) => {
 		const menu = menuRepository.create(req.body);
@@ -44,8 +45,9 @@ async function bootstrap() {
 	const httpsOptions = {
 		key: readFileSync('./key.pem'),
 		cert: readFileSync('./cert.pem')
-	}
-	https.createServer(httpsOptions, app).listen(HTTPS_PORT)
+	};
+	http.createServer(app).listen(PORT)
+	https.createServer(httpsOptions, app).listen(HTTPS_PORT);
 }
 
 bootstrap();

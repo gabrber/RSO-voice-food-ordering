@@ -8,6 +8,9 @@ ENV MONGO_PORT=37017
 
 ENV MONGO_DB=rso_nlp
 
+ENV PORT=5000
+ENV HTTPS_PORT=5001
+
 COPY package*.json ./
 
 USER root
