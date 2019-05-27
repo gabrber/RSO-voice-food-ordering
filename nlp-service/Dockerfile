@@ -10,7 +10,7 @@ ENV MONGO_DB=rso_nlp
 
 COPY package*.json ./
 
-USER node
+USER root
 
 RUN npm install
 
