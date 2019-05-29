@@ -1,0 +1,8 @@
+docker pull mongo:4.0.4
+docker run -d -p 27017-27019:27017-27019 --name mongodb mongo:4.0.4
+docker exec -it mongodb bash
+mongo
+use pizza_db
+db.createUser({user: "rwUser", pwd: "pizza123", roles: [{role: "readWrite", db: "pizza_db"}]
+db.createUser({user: "pizzaAdmin", pwd: "pizza123", roles: [{role: "userAdminAnyDatabase", db: "admin"}]
+
