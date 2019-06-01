@@ -51,8 +51,7 @@ new_order_schema_w_id = {
 
 new_order_schema_wo_id = {
     "type": "object",
-    "required": ["request_id", "state", "orders"],
-    "request_id": {"type": "integer"},
+    "required": ["state", "orders"],
     "properties": {
         "state": {"type": "string"},
         "orders": {
@@ -61,14 +60,14 @@ new_order_schema_wo_id = {
                 "type": "object",
                 "required": ["pizza", "size"],
                 "properties": {
-                    "pizza": {"type":"string"},
-                    "size": {"type":"string"}
+                    "pizza": {"type": "string"},
+                    "size": {"type": "string"}
                 }
             }
         },
         "address": {
             "type": "object",
-            "required": ["city", "street", "building", "flat"],
+            "required": ["city"],
             "properties": {
                 "city": {"type": "string"},
                 "street": {"type": "string"},
@@ -116,10 +115,9 @@ update_order_schema = {
 
 get_state_schema = {
     "type": "object",
-    "required": ["order_id", "request_id"],
+    "required": ["order_id"],
     "properties": {
-        "order_id": {"type": "integer"},
-        "request_id": {"type": "integer"}
+        "order_id": {"type": "integer"}
     }
 }
 

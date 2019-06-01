@@ -1,7 +1,0 @@
-flask
-socketio
-jsonschema
-json
-flask_pymongo
-bson
-flask_socketio
