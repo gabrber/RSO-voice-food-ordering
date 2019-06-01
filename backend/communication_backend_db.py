@@ -16,7 +16,7 @@ socketio = SocketIO(app)
 
 mongoapp = Flask(__name__)
 mongoapp.config['MONGO_DBNAME'] = 'pizza_db'
-mongoapp.config['MONGO_URI'] = 'mongodb://rwUser:pizza123@46.101.104.71:27017/pizza_db'
+mongoapp.config['MONGO_URI'] = 'mongodb://rwUser:pizza123@backend:27017/pizza_db'
 db = 'pizza_db'
 mongo = PyMongo(mongoapp)
 
