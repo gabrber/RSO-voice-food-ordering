@@ -1,0 +1,1 @@
+mongo $DB_NAME mongo.js
