@@ -21,7 +21,9 @@ services:
       context: db-nlp
     networks:
       - overlay
-      container_name: db-nlp
+    container_name: db-nlp
+    ports:
+      - "37017-37019:27017-27019" 
   frontend:
     build:
       context: frontend
