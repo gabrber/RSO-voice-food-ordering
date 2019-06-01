@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   backend:
     build:
@@ -12,7 +12,7 @@ services:
     build:
       context: db-backend
     networks:
-      - overlay  
+      - overlay
     container_name: db-backend
     expose:
       - "27017-27019"
@@ -23,15 +23,15 @@ services:
       - overlay
     container_name: db-nlp
     ports:
-      - "37017-37019:27017-27019" 
+      - "37017-37019:27017-27019"
   frontend:
     build:
       context: frontend
     networks:
-       - overlay
+      - overlay
     container_name: frontend
     ports:
       - "80:80"
-      - "443:443"
+      # - "443:443"
 networks:
   overlay:

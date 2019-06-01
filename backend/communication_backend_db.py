@@ -6,17 +6,18 @@ from random import randint
 import json
 from flask_pymongo import PyMongo
 from bson.json_util import dumps
-from flask_socketio import SocketIO, emit
 import requests
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
+
 sio = socketio.Server()
-app.wsgi_app = socketio.Middleware(sio, app.wsgi_app)
-socketio = SocketIO(app)
+app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 mongoapp = Flask(__name__)
 mongoapp.config['MONGO_DBNAME'] = 'pizza_db'
-mongoapp.config['MONGO_URI'] = 'mongodb://rwUser:pizza123@backend:27017/pizza_db'
+mongoapp.config['MONGO_URI'] = 'mongodb://rwUser:pizza123@db-backend:27017/pizza_db'
 db = 'pizza_db'
 mongo = PyMongo(mongoapp)
 
@@ -97,13 +98,13 @@ def get_state(order_id):
 
 
 # stub for action when someone connects
-@socketio.on("connect", namespace="/")
+@sio.on("connect", namespace="/")
 def connect():
-    emit("server_status", "server_up")
+    sio.emit("server_status", "server_up")
     print("connect ")
 
 
-@socketio.on('update_order')
+@sio.on('update_order')
 def update_order_handler(new_update):
     """
         Channel for updating order communication. Activated when server gets message with order update request from Backend.
@@ -131,10 +132,10 @@ def update_order_handler(new_update):
 
     # respond to Frontend
     order_to_update.pop("_id")
-    emit("new_order", json.dumps(order_to_update))
+    sio.emit("new_order", json.dumps(order_to_update))
 
 
-@socketio.on('new_menu')
+@sio.on('new_menu')
 def new_menu_handler(new_menu):
     """
         Channel for updating menu. Activated when server gets message with order update request from Backend.
@@ -161,10 +162,10 @@ def new_menu_handler(new_menu):
     requests.post('https://rso-restaurant-ga.herokuapp.com/new_menu', data=new_menu, json=True)
 
     # respond
-    emit("menu", json.dumps(new_menu))
+    sio.emit("menu", json.dumps(new_menu))
 
 
-@socketio.on('get_menu')
+@sio.on('get_menu')
 def get_menu_handler():
     """
         Channel for getting menu. Activated on Frontend request, responds with current menu.
@@ -175,7 +176,7 @@ def get_menu_handler():
     menu = mongo.db.pizzas.find_one({})
 
     # respond
-    emit("menu", json.dumps(menu["menu"]))
+    sio.emit("menu", json.dumps(menu["menu"]))
 
 
 if __name__ == '__main__':
