@@ -1,1 +1,1 @@
-mongo $DB_NAME mongo.js
+mongo --port 37017 $DB_NAME mongo.js
