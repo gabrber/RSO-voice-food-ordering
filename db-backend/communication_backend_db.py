@@ -44,6 +44,7 @@ def new_order():
 
     new_order_id = randint(0, 9999999999)
     new_order["order_id"] = new_order_id
+    new_order["state"] = "accepted"
 
     # update database
     orders = mongo.db.orders
@@ -54,7 +55,8 @@ def new_order():
     # inform Frontend about new order
     sio.emit('new_order', data=json.dumps(new_order))
     print("=========== End of function ===========")
-    return str(new_order_id)
+
+    return json.dumps(new_order)
 
 
 @app.route('/get_menu', methods=['GET'])
@@ -73,8 +75,8 @@ def get_menu():
     return json.dumps(result['menu'])
 
 
-@app.route('/get_order_status', methods=['GET'])
-def get_state():
+@app.route('/get_order_status/<order_id>', methods=['GET'])
+def get_state(order_id):
     """
     Endpoint for getting current order state.
 
@@ -85,7 +87,7 @@ def get_state():
     """
     # get request
     # state_req = request.get_json(force=True)
-    order_id = request.args.get('order_id')
+    print("Order id " + str(order_id))
 
     # query
     query_result = mongo.db.orders.find_one({"order_id": int(order_id)})
