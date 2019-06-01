@@ -1,0 +1,11 @@
+version: '3'
+services:
+  front:
+    build: '.'
+    ports:
+      - '80:80'
+      - '443:443'
+  back:
+    build: './serverek'
+    ports:
+      - '9999:9999'
