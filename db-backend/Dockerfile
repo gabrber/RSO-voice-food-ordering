@@ -1,11 +1,5 @@
-FROM python:3
+FROM mongo:4.0.4
+COPY script.sh .
+COPY mongo.js .
+RUN chmod +x script.sh
 
-WORKDIR /usr/src/app
-
-COPY ./requirements.txt ./
-
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY . .
-
-CMD [ "python", "./communication_backend_db.py"]
