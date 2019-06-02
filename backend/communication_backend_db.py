@@ -104,7 +104,7 @@ def connect(arg1,arg2):
     print("connect ")
 
 @sio.on('login')
-def login(user):
+def login(user,arg2):
     sio.emit("user", 'admin')
     print('connect')
 
