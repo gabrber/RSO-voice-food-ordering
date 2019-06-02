@@ -103,6 +103,11 @@ def connect(arg1,arg2):
     sio.emit("server_status", "server_up")
     print("connect ")
 
+@sio.on('login')
+def login(user):
+    sio.emit("user", 'admin')
+    print('connect')
+
 
 @sio.on('update_order')
 def update_order_handler(new_update):
