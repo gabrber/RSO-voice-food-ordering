@@ -23,7 +23,7 @@ mongo = PyMongo(mongoapp)
 
 
 @app.route('/order', methods=['POST'])
-def new_order():
+def new_order(arg_sid):
     """
     Endpoint for receiving new order activated by NLP. When activated answers with order id, inserts order into database
     and sends the order to frontend via websocket.
@@ -61,7 +61,7 @@ def new_order():
 
 
 @app.route('/get_menu', methods=['GET'])
-def get_menu():
+def get_menu(arg_sid):
     """
     Endpoint for getting menu.
 
@@ -77,7 +77,7 @@ def get_menu():
 
 
 @app.route('/get_order_status/<order_id>', methods=['GET'])
-def get_state(order_id):
+def get_state(arg_sid,order_id):
     """
     Endpoint for getting current order state.
 
@@ -99,18 +99,18 @@ def get_state(order_id):
 
 # stub for action when someone connects
 @sio.on("connect", namespace="/")
-def connect(arg1,arg2):
+def connect(arg_sid,arg2):
     sio.emit("server_status", "server_up")
     print("connect ")
 
 @sio.on('login')
-def login(user,arg2):
+def login(arg_sid,user):
     sio.emit("user", 'admin')
     print('connect')
 
 
 @sio.on('update_order')
-def update_order_handler(new_update):
+def update_order_handler(arg_sid,new_update):
     """
         Channel for updating order communication. Activated when server gets message with order update request from Backend.
         After validating order update updates DB and respond to Frontend updated order.
@@ -141,7 +141,7 @@ def update_order_handler(new_update):
 
 
 @sio.on('new_menu')
-def new_menu_handler(new_menu,arg2):
+def new_menu_handler(arg_sid,new_menu):
     """
         Channel for updating menu. Activated when server gets message with order update request from Backend.
         After validating menu updates DB and respond to Frontend with new menu.
@@ -171,7 +171,7 @@ def new_menu_handler(new_menu,arg2):
 
 
 @sio.on('get_menu')
-def get_menu_handler(arg1):
+def get_menu_handler(arg_sid):
     """
         Channel for getting menu. Activated on Frontend request, responds with current menu.
         """
