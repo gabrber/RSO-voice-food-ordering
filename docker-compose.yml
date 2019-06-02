@@ -3,35 +3,25 @@ services:
   backend:
     build:
       context: backend
-    networks:
-      - overlay
     container_name: backend
     ports:
       - "5000:5000"
   db-backend:
     build:
       context: db-backend
-    networks:
-      - overlay
     container_name: db-backend
-    expose:
-      - "27017-27019"
+    ports:
+      - "27017-27019:27017-27019"
   db-nlp:
     build:
       context: db-nlp
-    networks:
-      - overlay
     container_name: db-nlp
     ports:
       - "37017:37017"
   frontend:
     build:
       context: frontend
-    networks:
-      - overlay
     container_name: frontend
     ports:
       - "80:80"
       # - "443:443"
-networks:
-  overlay:

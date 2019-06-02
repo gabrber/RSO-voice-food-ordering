@@ -17,7 +17,7 @@ app.wsgi_app = socketio.WSGIApp(sio, app.wsgi_app)
 
 mongoapp = Flask(__name__)
 mongoapp.config['MONGO_DBNAME'] = 'pizza_db'
-mongoapp.config['MONGO_URI'] = 'mongodb://rwUser:pizza123@db-backend:27017/pizza_db'
+mongoapp.config['MONGO_URI'] = 'mongodb://rwUser:pizza123@46.101.104.71:27017/pizza_db'
 db = 'pizza_db'
 mongo = PyMongo(mongoapp)
 
@@ -180,4 +180,4 @@ def get_menu_handler():
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(host='0.0.0.0')
