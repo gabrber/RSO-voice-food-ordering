@@ -99,7 +99,7 @@ def get_state(order_id):
 
 # stub for action when someone connects
 @sio.on("connect", namespace="/")
-def connect():
+def connect(arg1,arg2):
     sio.emit("server_status", "server_up")
     print("connect ")
 
