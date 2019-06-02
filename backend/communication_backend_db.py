@@ -141,7 +141,7 @@ def update_order_handler(new_update):
 
 
 @sio.on('new_menu')
-def new_menu_handler(new_menu):
+def new_menu_handler(new_menu,arg2):
     """
         Channel for updating menu. Activated when server gets message with order update request from Backend.
         After validating menu updates DB and respond to Frontend with new menu.
@@ -171,7 +171,7 @@ def new_menu_handler(new_menu):
 
 
 @sio.on('get_menu')
-def get_menu_handler():
+def get_menu_handler(arg1):
     """
         Channel for getting menu. Activated on Frontend request, responds with current menu.
         """
