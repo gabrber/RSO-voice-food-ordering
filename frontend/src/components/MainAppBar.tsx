@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+
 import {
   AppBar,
   Toolbar,
@@ -25,6 +27,13 @@ const MainAppBar: React.FC = () => {
   const classes = useStyles();
   const { state, dispatch } = useGlobalContext();
   const [isLoginModal, setLoginModal] = useState(false);
+  const [cookies, setCookie, removeCookie] = useCookies(['login_cookie']);
+
+  useEffect(() => {
+    if (cookies.login_cookie === 'admin') {
+      dispatch(setAdmin(true));
+    }
+  });
 
   const handleOpen = () => setLoginModal(true);
   const handleClose = () => setLoginModal(false);
@@ -32,6 +41,7 @@ const MainAppBar: React.FC = () => {
   const handleLogout = () => {
     state.socket.emit('logout');
     dispatch(setAdmin(false));
+    removeCookie('login_cookie');
   };
 
   return (

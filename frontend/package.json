@@ -13,6 +13,7 @@
     "@types/socket.io-client": "^1.4.32",
     "material-table": "^1.36.4",
     "react": "^16.8.6",
+    "react-cookie": "^4.0.0",
     "react-dom": "^16.8.6",
     "react-player": "^1.11.0",
     "react-router-dom": "^5.0.0",

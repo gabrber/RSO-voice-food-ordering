@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { useCookies } from 'react-cookie';
+
 import {
   makeStyles,
   Paper,
@@ -32,6 +34,7 @@ const LoginPopup: React.FC<{ handleClose: any }> = ({ handleClose }) => {
   const { state, dispatch } = useGlobalContext();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [cookies, setCookie, removeCookie] = useCookies(['login_cookie']);
 
   const handleLogin = () => {
     state.socket.emit('login', { login: login, password: password });
@@ -43,9 +46,10 @@ const LoginPopup: React.FC<{ handleClose: any }> = ({ handleClose }) => {
       console.log(user);
       if (user === 'admin') {
         dispatch(setAdmin(true));
+        setCookie('login_cookie', 'admin', { path: '/' });
       }
     });
-  }, [state.socket, dispatch]);
+  }, [state.socket, dispatch, setCookie]);
 
   return (
     <Grid
