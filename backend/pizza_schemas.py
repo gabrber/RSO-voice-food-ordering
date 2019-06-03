@@ -8,12 +8,7 @@ menu_schema = {
             "name": {"type":"string"},
             "price_small": {"type": "number"},
             "price_big": {"type": "number"},
-            "ingredients": {
-                "type": "array",
-                "items": {
-                    "type": "string"
-                }
-            },
+            "ingredients": {"type": "string"},
             "pizza_img": {"type": "string"}
         }
     }
@@ -86,12 +81,7 @@ update_menu_schema = {
         "name": {"type": "string"},
         "price_small": {"type": "number"},
         "price_big": {"type": "number"},
-        "ingredients": {
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
+        "ingredients": {"type": "string"},
         "pizza_img": {"type": "string"}
     }
 }
