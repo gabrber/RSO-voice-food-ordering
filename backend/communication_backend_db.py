@@ -99,7 +99,7 @@ def get_state(order_id):
 
 @sio.on("login", namespace="/")
 def login(arg_sid, credentials):
-    if credentials["login"] == "rwUser" and credentials["password"]:
+    if credentials["login"] == "rwUser" and credentials["password"] == "pizza123":
         print("succesfully validated login attempt")
         sio.emit("user", "admin")
     else:
