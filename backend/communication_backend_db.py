@@ -54,7 +54,7 @@ def new_order():
     new_order.pop('_id', None)
 
     # inform Frontend about new order
-    sio.emit('new_order', data=json.dumps(new_order))
+    sio.emit('new_order', data=new_order)
     print("=========== End of function ===========")
 
     return json.dumps(new_order)
@@ -116,7 +116,6 @@ def update_order_handler(arg_sid,new_update):
         After validating order update updates DB and respond to Frontend updated order.
     """
     # read order update from Frontend
-    new_update = json.loads(new_update)
     print("Received update status request")
     print(new_update)
 
@@ -137,7 +136,7 @@ def update_order_handler(arg_sid,new_update):
 
     # respond to Frontend
     order_to_update.pop("_id")
-    sio.emit("new_order", json.dumps(order_to_update))
+    sio.emit("new_order", order_to_update))
 
 
 @sio.on('new_menu')
