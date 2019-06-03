@@ -9,7 +9,7 @@ const Orders: React.FC = () => {
 
   useEffect(() => {
     state.socket.emit('get_orders');
-  });
+  },[state.socket]);
 
   const columns = [
     { title: 'Order ID', field: 'order_id' },
