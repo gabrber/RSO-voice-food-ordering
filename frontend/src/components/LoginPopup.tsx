@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useCookies } from 'react-cookie';
+import React, { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 import {
   makeStyles,
@@ -8,45 +8,45 @@ import {
   Typography,
   Button,
   Grid
-} from '@material-ui/core';
-import { useGlobalContext } from '../context/GlobalContext';
-import { setAdmin } from '../context/actions';
+} from "@material-ui/core";
+import { useGlobalContext } from "../context/GlobalContext";
+import { setAdmin } from "../context/actions";
 
 const useStyles = makeStyles({
   grid: {
-    minHeight: '100vh'
+    minHeight: "100vh"
   },
   paper: {
-    padding: '10px'
+    padding: "10px"
   },
   text: {
-    display: 'block'
+    display: "block"
   },
   buttonsDiv: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    paddingTop: '10px'
+    display: "flex",
+    justifyContent: "flex-end",
+    paddingTop: "10px"
   }
 });
 
 const LoginPopup: React.FC<{ handleClose: any }> = ({ handleClose }) => {
   const classes = useStyles();
   const { state, dispatch } = useGlobalContext();
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
-  const [cookies, setCookie, removeCookie] = useCookies(['login_cookie']);
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
+  const [cookies, setCookie, removeCookie] = useCookies(["login_cookie"]);
 
   const handleLogin = () => {
-    state.socket.emit('login', { login: login, password: password });
+    state.socket.emit("login", { login: login, password: password });
     handleClose();
   };
 
   useEffect(() => {
-    state.socket.on('user', (user: string) => {
+    state.socket.on("user", (user: string) => {
       console.log(user);
-      if (user === 'admin') {
+      if (user === "admin") {
         dispatch(setAdmin(true));
-        setCookie('login_cookie', 'admin', { path: '/' });
+        setCookie("login_cookie", "admin", { path: "/" });
       }
     });
   }, [state.socket, dispatch, setCookie]);
@@ -72,6 +72,7 @@ const LoginPopup: React.FC<{ handleClose: any }> = ({ handleClose }) => {
             className={classes.text}
             label="hasło"
             value={password}
+            type="password"
             onChange={event => setPassword(event.target.value)}
           />
           <div className={classes.buttonsDiv}>
