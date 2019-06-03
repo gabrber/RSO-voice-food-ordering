@@ -147,7 +147,6 @@ def new_menu_handler(arg_sid,new_menu):
         After validating menu updates DB and respond to Frontend with new menu.
         """
     # read new menu from Frontend
-    new_menu = json.loads(new_menu)
     print("Received new menu")
     print(new_menu)
 
@@ -164,10 +163,11 @@ def new_menu_handler(arg_sid,new_menu):
     mongo.db.pizzas.insert({"menu": new_menu})
 
     # Send new menu to NLP service
-    requests.post('https://rso-restaurant-ga.herokuapp.com/new_menu', data=new_menu, json=True)
+    headers = {'content-type': 'application/json'}
+    requests.post('https://rso-restaurant-ga.herokuapp.com/new_menu', data=json.dumps(new_menu), headers=headers)
 
     # respond
-    sio.emit("menu", json.dumps(new_menu))
+    sio.emit("menu",new_menu)
 
 
 @sio.on('get_menu')
@@ -181,7 +181,7 @@ def get_menu_handler(arg_sid):
     menu = mongo.db.pizzas.find_one({})
 
     # respond
-    sio.emit("menu", json.dumps(menu["menu"]))
+    sio.emit("menu", menu["menu"])
 
 
 if __name__ == '__main__':
