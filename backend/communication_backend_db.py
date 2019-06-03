@@ -164,7 +164,7 @@ def new_menu_handler(arg_sid,new_menu):
 
     # Send new menu to NLP service
     headers = {'content-type': 'application/json'}
-    requests.post('https://rso-restaurant-ga.herokuapp.com/new_menu', data=json.dumps(new_menu), headers=headers)
+    requests.post('https://rso-restaurant-ga.herokuapp.com/update_menu', data=json.dumps(new_menu), headers=headers)
 
     # respond
     sio.emit("menu",new_menu)
