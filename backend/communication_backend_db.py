@@ -125,7 +125,6 @@ def send_all_orders():
     for o in orders:
         if '_id' in o:
             del o['_id']
-        print(o)
     for o in orders:
         emit("new_order", o)
     
