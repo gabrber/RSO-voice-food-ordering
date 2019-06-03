@@ -58,7 +58,6 @@ const Orders: React.FC = () => {
               })
             }
           >
-            accepted, preparing, delivering, cancelled
             <MenuItem value={'accepted'}>Zaakceptowane</MenuItem>
             <MenuItem value={'preparing'}>Przygotowywane</MenuItem>
             <MenuItem value={'delivering'}>Dostawa</MenuItem>
