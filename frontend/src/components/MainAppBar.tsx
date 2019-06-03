@@ -59,6 +59,11 @@ const MainAppBar: React.FC = () => {
                   <Typography>Orders</Typography>
                 </Link>
               </Button>
+              <Button>
+                <Link className={classes.link} to="/historic-orders">
+                  <Typography>Historic orders</Typography>
+                </Link>
+              </Button>
             </div>
           )}
 

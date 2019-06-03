@@ -12,6 +12,7 @@ import BottomBar from './bottom-bar/BottomBar';
 import PrivacyPolicy from './cookies/PrivacyPolicy';
 import Terms from './cookies/Terms';
 import { useCookies } from 'react-cookie';
+import HistoricOrders from './restaurant/orders/HistoricOrders';
 
 const MainApp: React.FC = () => {
   const { state, dispatch } = useGlobalContext();
@@ -46,6 +47,9 @@ const MainApp: React.FC = () => {
 
         {state.isAdmin && <Route exact path="/menu" component={Menu} />}
         {state.isAdmin && <Route exact path="/orders" component={Orders} />}
+        {state.isAdmin && (
+          <Route exact path="/historic-orders" component={HistoricOrders} />
+        )}
       </Switch>
       <BottomBar />
     </div>

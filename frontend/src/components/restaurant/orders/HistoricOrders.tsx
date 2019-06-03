@@ -4,7 +4,7 @@ import { useGlobalContext } from '../../../context/GlobalContext';
 import { OrdersModel } from '../../../context/models';
 import MaterialTable from 'material-table';
 
-const Orders: React.FC = () => {
+const HistoricOrders: React.FC = () => {
   const { state, dispatch } = useGlobalContext();
 
   useEffect(() => {
@@ -48,22 +48,9 @@ const Orders: React.FC = () => {
       field: 'status',
       render: (rowData: OrdersModel) => {
         return (
-          <Select
-            style={{ width: '150px' }}
-            value={rowData.status}
-            onChange={event =>
-              state.socket.emit('update_order', {
-                order_id: rowData.order_id,
-                status: event.target.value
-              })
-            }
-          >
-            <MenuItem value={'accepted'}>Zaakceptowane</MenuItem>
-            <MenuItem value={'preparing'}>Przygotowywane</MenuItem>
-            <MenuItem value={'delivering'}>Dostawa</MenuItem>
-            <MenuItem value={'cancelled'}>Anulowane</MenuItem>
-            <MenuItem value={'finished'}>Zakończone</MenuItem>
-          </Select>
+          <div>
+            {rowData.status === 'finished' ? 'Zakończone' : 'Anulowane'}
+          </div>
         );
       }
     }
@@ -75,7 +62,7 @@ const Orders: React.FC = () => {
       columns={columns}
       // data={state.orders}
       data={state.orders.filter(order => {
-        return order.status !== 'finished' && order.status !== 'cancelled';
+        return order.status === 'finished' || order.status === 'cancelled';
       })}
       localization={{
         body: {
@@ -86,4 +73,4 @@ const Orders: React.FC = () => {
   );
 };
 
-export default Orders;
+export default HistoricOrders;
