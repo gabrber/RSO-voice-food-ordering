@@ -3,4 +3,4 @@ WORKDIR /usr/src/app
 COPY ./requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
-CMD [ "python", "./communication_backend_db.py"]
+CMD [ "python", "-u", "./communication_backend_db.py"]
