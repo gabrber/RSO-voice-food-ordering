@@ -23,7 +23,7 @@ mongo = PyMongo(mongoapp)
 
 
 @app.route('/order', methods=['POST'])
-def new_order(arg_sid):
+def new_order():
     """
     Endpoint for receiving new order activated by NLP. When activated answers with order id, inserts order into database
     and sends the order to frontend via websocket.
@@ -61,7 +61,7 @@ def new_order(arg_sid):
 
 
 @app.route('/get_menu', methods=['GET'])
-def get_menu(arg_sid):
+def get_menu():
     """
     Endpoint for getting menu.
 
@@ -77,7 +77,7 @@ def get_menu(arg_sid):
 
 
 @app.route('/get_order_status/<order_id>', methods=['GET'])
-def get_state(arg_sid,order_id):
+def get_state(order_id):
     """
     Endpoint for getting current order state.
 
