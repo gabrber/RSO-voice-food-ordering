@@ -15,7 +15,7 @@ interface Address {
 }
 
 export interface OrderStatusResponse {
-	state: string;
+	status: string;
 }
 
 export enum OrderStatus {

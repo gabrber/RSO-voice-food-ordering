@@ -158,7 +158,7 @@ ga.intent('finish-order', async (conv, params, confirmationGranted) => {
 			conv.close(`Twoje zamówienie zostało przekazane do realizacji`);
 		} catch (err) {
 			console.log(err);
-			conv.close('Przepraszam. Wystąpił błąd. Niestety nie mogę zrealizować twojego zamówienia. Skontaktuj się z restuaracją.');			
+			conv.close('Przepraszam. Wystąpił błąd. Niestety nie mogę zrealizować twojego zamówienia. Skontaktuj się z restauracją.');			
 		}
 	} else {
 		conv.close('Przykro mi, że nie mogę zrealizować twojego zamówienia.');

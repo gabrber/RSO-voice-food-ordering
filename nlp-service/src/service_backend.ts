@@ -41,6 +41,8 @@ export const getOrderStatus = async (orderId: string): Promise<OrderStatus> => {
 		json: true
 	}
 	const response: OrderStatusResponse = await request(options)
+	
+	console.log(`order status: ${response.status}`);
 
-	return mapOrderStatus(response.state);
+	return mapOrderStatus(response.status);
 };
