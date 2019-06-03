@@ -149,7 +149,8 @@ def new_menu_handler(arg_sid,new_menu):
     print(f"Received new menu: <<{new_menu}>>")
     print(new_menu)
     for el in new_menu:
-        el.pop("tableData")
+        if "tableData" in el:
+            el.pop("tableData")
     print(f"menu wo tableData: <<{new_menu}>>")
 
     # validate it against json schema
