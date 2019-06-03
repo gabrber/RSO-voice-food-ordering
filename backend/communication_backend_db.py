@@ -119,7 +119,7 @@ def login(arg_sid,user):
     print('connect')
 
     
-@socketio.on("get_orders")
+@sio.on("get_orders")
 def send_all_orders():
     orders = list(mongo.db.orders.find({}))
     for o in orders:
