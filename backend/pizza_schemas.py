@@ -2,9 +2,9 @@ menu_schema = {
     "type": "array",
     "items": {
         "type": "object",
-        "required": ["menu_id", "name", "price_small", "price_big", "ingredients", "pizza_img"],
+        "required": ["pizza_id", "name", "price_small", "price_big", "ingredients", "pizza_img"],
         "properties": {
-            "menu_id": {"type":"integer"},
+            "pizza_id": {"type":"integer"},
             "name": {"type":"string"},
             "price_small": {"type": "number"},
             "price_big": {"type": "number"},
@@ -80,9 +80,9 @@ new_order_schema_wo_id = {
 
 update_menu_schema = {
     "type": "object",
-    "required": ["menu_id", "name", "price_small", "price_big", "ingredients", "pizza_img"],
+    "required": ["pizza_id", "name", "price_small", "price_big", "ingredients", "pizza_img"],
     "properties": {
-        "menu_id": {"type": "integer"},
+        "pizza_id": {"type": "integer"},
         "name": {"type": "string"},
         "price_small": {"type": "number"},
         "price_big": {"type": "number"},
