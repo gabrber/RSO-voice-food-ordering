@@ -99,7 +99,7 @@ def get_state(order_id):
 
 @sio.on("login", namespace="/")
 def login(arg_sid, credentials):
-    if credentials["login"] == "rwUser" and credentials["password"]:
+    if credentials["login"] == "rwUser" and credentials["password"] == "pizza123":
         print("succesfully validated login attempt")
         sio.emit("user", "admin")
     else:
@@ -145,7 +145,7 @@ def update_order_handler(arg_sid,new_update):
     # update DB
     query = {"order_id": new_update["order_id"]}
     order_to_update = mongo.db.orders.find_one(query)
-    order_to_update["state"] = new_update["state"]
+    order_to_update["status"] = new_update["status"]
     mongo.db.orders.save(order_to_update)
     print("Database updated")
 
