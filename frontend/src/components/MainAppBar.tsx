@@ -29,12 +29,6 @@ const MainAppBar: React.FC = () => {
   const [isLoginModal, setLoginModal] = useState(false);
   const [cookies, setCookie, removeCookie] = useCookies(['login_cookie']);
 
-  useEffect(() => {
-    if (cookies.login_cookie === 'admin') {
-      dispatch(setAdmin(true));
-    }
-  });
-
   const handleOpen = () => setLoginModal(true);
   const handleClose = () => setLoginModal(false);
 
