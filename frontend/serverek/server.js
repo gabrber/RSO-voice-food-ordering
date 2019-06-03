@@ -8,7 +8,7 @@ var io = require('socket.io')(server);
 const menu = [
   {
     pizza_id: 1,
-    ingredients: ['ser', 'szynka'],
+    ingredients: 'ser, szynka',
     name: 'margherita',
     pizza_img:
       'http://www.kingcoconutnegombo.com/media/k2/items/cache/802a9daf23bff040c546f525d4bd22bc_XL.jpg',

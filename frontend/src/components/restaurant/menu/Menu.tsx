@@ -44,16 +44,7 @@ const columns = [
   },
   {
     title: 'Składnki',
-    field: 'ingredients',
-    render: (rowData: PizzaModel) => {
-      return (
-        <ul>
-          {rowData.ingredients.map(ingredient => {
-            return <li>{ingredient}</li>;
-          })}
-        </ul>
-      );
-    }
+    field: 'ingredients'
   }
 ];
 
@@ -84,9 +75,7 @@ const Menu: React.FC = () => {
                     pizza_id: Number(newData.pizza_id) | 0,
                     name: String(newData.name),
                     pizza_img: String(newData.pizza_img),
-                    ingredients: newData.ingredients
-                      ? newData.ingredients.split(',')
-                      : [],
+                    ingredients: String(newData.ingredients),
                     price_small: Number(newData.price_small) | 0,
                     price_big: Number(newData.price_big) | 0
                   } as PizzaModel
@@ -106,7 +95,7 @@ const Menu: React.FC = () => {
                   pizza_id: Number(newData.pizza_id) | 0,
                   name: String(newData.name),
                   pizza_img: String(newData.pizza_img),
-                  ingredients: newData.ingredients ? newData.ingredients : [],
+                  ingredients: String(newData.ingredients),
                   price_small: Number(newData.price_small) | 0,
                   price_big: Number(newData.price_big) | 0
                 } as PizzaModel;

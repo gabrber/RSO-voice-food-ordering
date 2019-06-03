@@ -22,7 +22,7 @@ const Orders: React.FC = () => {
             {rowData.orders.map(order => {
               return (
                 <li>
-                  {order.pizza_id} + {order.name} + {order.size}
+                  {order.pizza} + {order.size}
                 </li>
               );
             })}

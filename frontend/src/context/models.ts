@@ -3,7 +3,7 @@ export interface PizzaModel {
   name: string;
   price_small: number;
   price_big: number;
-  ingredients: string[];
+  ingredients: string;
   pizza_img: string;
 }
 
@@ -11,8 +11,7 @@ export interface OrdersModel {
   order_id: number;
   orders: [
     {
-      pizza_id: number;
-      name: string;
+      pizza: string;
       size: string;
     }
   ];
