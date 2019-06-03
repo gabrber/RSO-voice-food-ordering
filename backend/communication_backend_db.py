@@ -45,7 +45,7 @@ def new_order():
 
     new_order_id = randint(0, 9999999999)
     new_order["order_id"] = new_order_id
-    new_order["state"] = "accepted"
+    new_order["status"] = "accepted"
 
     # update database
     orders = mongo.db.orders
@@ -93,7 +93,7 @@ def get_state(order_id):
     # query
     query_result = mongo.db.orders.find_one({"order_id": int(order_id)})
     # answer
-    answer = {"state": query_result["state"]}
+    answer = {"status": query_result["status"]}
     return dumps(answer)
 
 
