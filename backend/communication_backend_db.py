@@ -118,6 +118,17 @@ def login(arg_sid,user):
     sio.emit("user", 'admin')
     print('connect')
 
+    
+@socketio.on("get_orders")
+def send_all_orders():
+    orders = list(mongo.db.orders.find({}))
+    for o in orders:
+        if '_id' in o:
+            del o['_id']
+        print(o)
+    for o in orders:
+        emit("new_order", o)
+    
 
 @sio.on('update_order')
 def update_order_handler(arg_sid,new_update):
