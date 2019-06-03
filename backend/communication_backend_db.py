@@ -136,7 +136,7 @@ def update_order_handler(arg_sid,new_update):
 
     # respond to Frontend
     order_to_update.pop("_id")
-    sio.emit("new_order", order_to_update))
+    sio.emit("new_order", order_to_update)
 
 
 @sio.on('new_menu')
@@ -146,8 +146,11 @@ def new_menu_handler(arg_sid,new_menu):
         After validating menu updates DB and respond to Frontend with new menu.
         """
     # read new menu from Frontend
-    print("Received new menu")
+    print(f"Received new menu: <<{new_menu}>>")
     print(new_menu)
+    for el in new_menu:
+        new_menu.pop("tableData")
+    print(f"menu wo tableData: <<{new_menu}>>")
 
     # validate it against json schema
     try:
