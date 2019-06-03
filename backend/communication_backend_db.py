@@ -113,11 +113,6 @@ def connect(arg_sid,arg2):
     sio.emit("server_status", "server_up")
     print("connect ")
 
-@sio.on('login')
-def login(arg_sid,user):
-    sio.emit("user", 'admin')
-    print('connect')
-
     
 @sio.on("get_orders")
 def send_all_orders():
