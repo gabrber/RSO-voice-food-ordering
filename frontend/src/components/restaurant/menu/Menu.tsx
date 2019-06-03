@@ -32,15 +32,17 @@ const columns = [
       />
     )
   },
-  { title: "Pizza ID", field: "pizza_id" },
+  { title: "Pizza ID", field: "pizza_id", type: "numeric" },
   { title: "Nazwa", field: "name" },
   {
     title: "Cena mała",
-    field: "price_small"
+    field: "price_small",
+    type: "numeric"
   },
   {
     title: "Cena duża",
-    field: "price_big"
+    field: "price_big",
+    type: "numeric"
   },
   {
     title: "Składnki",
