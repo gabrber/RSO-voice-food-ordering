@@ -6,6 +6,7 @@ import { getRemoteMenu } from './service_backend';
 export const synchronize = async (repo: MongoRepository<MenuEntity>) => {
 	try {
 		const remoteMenu = await getRemoteMenu();
+		console.log(`sychronize: remote = ${remoteMenu}`)
 		await addMenu(repo, remoteMenu);
 	} catch (err) {
         console.log('Synchronize failed: probably restaurant backend is unreachable')

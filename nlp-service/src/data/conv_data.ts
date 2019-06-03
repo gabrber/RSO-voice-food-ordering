@@ -8,6 +8,5 @@ export interface PizzaOrderConv {
 export interface OrderAddress {
     phone: string
     city: string
-    addressLines: string[]
 }
 

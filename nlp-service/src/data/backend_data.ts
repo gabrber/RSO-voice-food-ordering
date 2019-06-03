@@ -1,5 +1,5 @@
 export interface Order {
-	order_id?: string;
+	order_id?: number;
 	orders: PizzaOrderItem[];
 	phone: string;
 	address: Address;
@@ -12,12 +12,10 @@ interface PizzaOrderItem {
 
 interface Address {
 	city: string;
-	addressLines: string[];
 }
 
 export interface OrderStatusResponse {
-	order_id: string;
-	status: string;
+	state: string;
 }
 
 export enum OrderStatus {
@@ -35,3 +33,4 @@ export const mapOrderStatus = (status: string) => {
 		cancelled: OrderStatus.cancelled
 	}[status];
 };
+//

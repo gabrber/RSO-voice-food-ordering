@@ -27,9 +27,6 @@ class MenuEntity {
     @ObjectIdColumn()
     id?: ObjectID
 
-    // @Column()
-    // remoteId: string
-
     @Column(type => PizzaEntity)
     items: PizzaEntity[]
 }

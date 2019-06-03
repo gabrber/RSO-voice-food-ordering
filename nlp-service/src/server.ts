@@ -4,50 +4,46 @@ import ga from './assistant';
 import { createConnection } from 'typeorm';
 import { MenuEntity } from './data/entities';
 import { synchronize } from './service_synchronize';
-import * as https from 'https';
-import * as http from 'http';
-import { readFileSync } from 'fs';
+import { PizzaJSON } from './data/interfaces';
+import { addMenu } from './service_local';
+import * as morgan from 'morgan'
 
 async function bootstrap() {
-	const conn = await createConnection({
+	createConnection({
 		type: 'mongodb',
 		host: process.env.MONGO_HOST,
 		port: parseInt(process.env.MONGO_PORT),
 		database: process.env.MONGO_DB,
+		username: process.env.MONGO_USERNAME,
+		password: process.env.MONGO_PASSWORD,
 		useNewUrlParser: true,
 		entities: [ MenuEntity ],
 		name: 'default'
-	});
-	const menuRepository = conn.getMongoRepository(MenuEntity);
+	}).then(async conn => {
+		const menuRepository = conn.getMongoRepository(MenuEntity);
 
-	await synchronize(menuRepository);
-	console.log('Local DB synchronized with remote');
-
-	const app = express();
-	app.use(bodyParser.json());
-
-	app.post('/nlp', ga);
-
-	const PORT = process.env.PORT || 5000;
-	const HTTPS_PORT = process.env.HTTPS_PORT || 5001;
-
-	// app.listen(PORT).on('listening', () => {
-	// 	console.log(`Server is running at: http://localhost:${PORT}`);
-	// });
-
-	app.post('/update_menu', async (req, res) => {
-		const menu = menuRepository.create(req.body);
-		const saved = await menuRepository.save(menu);
-
-		res.json(saved);
-	});
-
-	const httpsOptions = {
-		key: readFileSync('./key.pem'),
-		cert: readFileSync('./cert.pem')
-	};
-	http.createServer(app).listen(PORT)
-	https.createServer(httpsOptions, app).listen(HTTPS_PORT);
+		await synchronize(menuRepository)
+		console.log('Local DB synchronized with remote');
+	
+		const app = express();
+		app.use(morgan('combined'))
+		app.use(bodyParser.json());
+	
+		app.post('/nlp', ga);
+	
+		const PORT = process.env.PORT || 3000;
+	
+		app.listen(PORT).on('listening', () => {
+			console.log(`Server is running at: http://localhost:${PORT}`);
+		});
+	
+		app.post('/update_menu', async (req, res) => {
+			const pizzas: PizzaJSON[] = req.body;
+			addMenu(menuRepository, pizzas);
+	
+			res.sendStatus(200)
+		});
+	})
 }
 
 bootstrap();

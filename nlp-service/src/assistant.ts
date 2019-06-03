@@ -55,7 +55,7 @@ ga.intent('Default Welcome Intent', (conv) => {
 ga.intent('Default Fallback Intent', (conv) => {
 	if (conv.contexts.get(Context.ORDER_PIZZA)) {
 		conv.contexts.set(Context.ORDER_PIZZA_FALLBACK, 1);
-		conv.followup(Event.SHOW_MENU)
+		conv.followup(Event.SHOW_MENU);
 	}
 	conv.ask('Nie rozumiem. Czy możesz powtórzyć?');
 });
@@ -85,7 +85,7 @@ ga.intent('get-order-status', async (conv) => {
 
 ga.intent('show-menu', async (conv) => {
 	if (conv.contexts.get(Context.ORDER_PIZZA_FALLBACK)) {
-		conv.ask('Nie rozpoznałem nazwy pizzy. Spróbuj jeszcze raz.')
+		conv.ask('Nie rozpoznałem nazwy pizzy. Spróbuj jeszcze raz.');
 	}
 	if (conv.contexts.get(Context.MORE_PIZZAS)) {
 		const currentOrder = getCurrentOrder(conv).map((pizzaConv) => pizzaConv.name).join(', ');
@@ -134,9 +134,6 @@ ga.intent('choose-pizza-end', (conv) => {
 ga.intent('delivery-address-complete', (conv) => {
 	const arg = conv.arguments.get('DELIVERY_ADDRESS_VALUE');
 	if (arg.userDecision === 'ACCEPTED') {
-		console.log(`Address lines: ${mapAddress(arg.location).addressLines}`)
-		console.log(`Phone: ${mapAddress(arg.location).phone}`)
-		console.log(`City: ${mapAddress(arg.location).city}`)
 		saveDeliveryAddress(conv, mapAddress(arg.location));
 
 		const order = getCurrentOrder(conv).map((pizza) => pizza.name).join(', ');
@@ -144,7 +141,7 @@ ga.intent('delivery-address-complete', (conv) => {
 
 		conv.ask(
 			new Confirmation(`Super. Mam twój adres. Zamawiasz: ${order}.
-			Koszt zamówienia wynosi: ${cost}. Czy potwierdzasz zamówienie?`)
+			Koszt zamówienia wynosi: ${cost} Czy potwierdzasz zamówienie?`)
 		);
 		conv.contexts.set(Context.ORDER_PIZZA, 1);
 	} else {
@@ -155,10 +152,14 @@ ga.intent('delivery-address-complete', (conv) => {
 // This intent should react on actions.intent.CONFIRMATION event
 ga.intent('finish-order', async (conv, params, confirmationGranted) => {
 	if (confirmationGranted) {
-		const order = await sendOrder(createOrder(getCurrentOrder(conv), getDeliveryAddress(conv)));
-		saveSentOrder(conv, order);
-
-		conv.close(`Twoje zamówienie zostało przekazane do realizacji`);
+		try {
+			const order = await sendOrder(createOrder(getCurrentOrder(conv), getDeliveryAddress(conv)));
+			saveSentOrder(conv, order);
+			conv.close(`Twoje zamówienie zostało przekazane do realizacji`);
+		} catch (err) {
+			console.log(err);
+			conv.close('Przepraszam. Wystąpił błąd. Niestety nie mogę zrealizować twojego zamówienia. Skontaktuj się z restuaracją.');			
+		}
 	} else {
 		conv.close('Przykro mi, że nie mogę zrealizować twojego zamówienia.');
 	}
@@ -204,9 +205,8 @@ const savePizzaInOrder = (conv: DialogflowConversation, pizza: PizzaEntity, size
 
 const mapAddress = ({ postalAddress, phoneNumber }: GoogleActionsV2Location): OrderAddress => {
 	return {
-		addressLines: postalAddress.addressLines,
 		phone: phoneNumber,
-		city: postalAddress.locality
+		city: postalAddress.locality + ', ' + postalAddress.addressLines
 	};
 };
 
@@ -219,9 +219,8 @@ const saveDeliveryAddress = (conv: DialogflowConversation, address: OrderAddress
 };
 
 const mockAddress: OrderAddress = {
-	addressLines: [ 'Chełmska', '6/8' ],
 	phone: '+48666777888',
-	city: 'Warszawa'
+	city: 'Warszawa, Chełmska 22'
 };
 
 function menuToListResponse(menu: MenuEntity): List {

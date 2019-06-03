@@ -1,10 +1,10 @@
 interface PizzaJSON {
-    menu_id: string
+    pizza_id: string
     name: string
     price_small: number
     price_big: number
-    ingredients: string[]
-    image_url: string
+    ingredients: string
+    pizza_img: string
 }
 
 interface Order {

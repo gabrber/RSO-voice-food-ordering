@@ -3,23 +3,21 @@ import { MenuEntity } from './data/entities';
 import { MongoRepository } from 'typeorm';
 
 async function getLocalMenu(repository: MongoRepository<MenuEntity>): Promise<MenuEntity> {
-	const menus = await repository.find();
+	const menus = await repository.find()
 	if (menus.length == 0) {
 		return Promise.reject('No menus stored in local database');
 	}
 
-	return menus[0];
+	return menus[menus.length - 1];
 }
 
 async function addMenu(repository: MongoRepository<MenuEntity>, menu: PizzaJSON[]): Promise<MenuEntity> {
-    const entity = toMenuEntity(menu);
+	const entity = toMenuEntity(menu);
+	
+	const savedMenu = await repository.save(entity);
+	console.log(`addMenu: ${savedMenu.id}`)
 
-    // const storedMenu = await repository.findOne({ remoteId: menu.menu_id });
-    // if (storedMenu) {
-    //     return storedMenu;
-    // } else {
-        return repository.save(entity);
-    // }
+	return savedMenu
 }
 
 function toMenuEntity(menu: PizzaJSON[]): MenuEntity {
@@ -30,8 +28,8 @@ function toMenuEntity(menu: PizzaJSON[]): MenuEntity {
 			name: item.name,
 			priceSmall: item.price_small,
 			priceBig: item.price_big,
-			ingredients: item.ingredients,
-			imageUrl: item.image_url
+			ingredients: item.ingredients.split(','),
+			imageUrl: item.pizza_img
 		};
 	});
 

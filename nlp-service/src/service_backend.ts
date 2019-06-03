@@ -2,75 +2,45 @@ import { Order, OrderStatus, OrderStatusResponse, mapOrderStatus } from './data/
 import { PizzaJSON } from './data/interfaces';
 import { RESTAURANT_BACKEND_URL } from './info';
 import fetch from 'node-fetch';
+import * as request from 'request-promise-native'
 import WebSocket = require('websocket-as-promised');
 import { print } from 'util';
 
-const url = process.env.RESTAURANT_BACKEND_WEBSOCKET || 'ws://websocket.url';
-const orderWebsocket = new WebSocket(url, {
-	packMessage: JSON.stringify,
-	unpackMessage: JSON.parse,
-	attachRequestId: (data, requestId) => Object.assign({ requestId }, data),
-	extractRequestId: (data) => data && data.requestId
-});
-
 export const sendOrder = async (order: Order): Promise<Order> => {
 	print(`sendOrder: ${order}`);
-	// mock
-	return Promise.resolve<Order>({
-		...order,
-		order_id: 'order_id'
-	});
-	// remote
-	const response = await orderWebsocket.sendRequest(order);
+	const requestOptions = {
+		uri: `${RESTAURANT_BACKEND_URL}/order`,
+		method: 'POST',
+		json: true,
+		body: order
+	}
+	const response: Order = await request(requestOptions)
+
+	console.log('sendOrder, response.id = ' + response.order_id)
 
 	return { ...response };
 };
 
 export const getRemoteMenu = async (): Promise<PizzaJSON[]> => {
-	// mock
-	return [
-		{
-			menu_id: 'menu_id',
-			name: 'Serowa',
-			price_small: 20.0,
-			price_big: 40.0,
-			ingredients: [ 'ser', 'gorgonzola', 'ser pleśniowy' ],
-			image_url: 'https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/pizza.png'
-		},
-		{
-			menu_id: 'menu_id',
-			name: 'Capri',
-			price_small: 30.0,
-			price_big: 50.0,
-			ingredients: [ 'ser', 'szynka', 'ser pleśniowy' ],
-			image_url: 'https://www.kwestiasmaku.com/sites/kwestiasmaku.com/files/ciasto_na_pizze_00.jpg'
-		},
-		{
-			menu_id: 'menu_id',
-			name: 'Margheritta',
-			price_small: 15.0,
-			price_big: 20.0,
-			ingredients: [ 'ser', 'sos pomidorowy' ],
-			image_url: 'https://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/pizza.png'
-		}
-	];
 	// remote
 	const options = {
 		uri: `${RESTAURANT_BACKEND_URL}/get_menu`,
 		json: true
 	};
-	const response = await fetch(options.uri);
-	const menu: PizzaJSON[] = await response.json();
+	const response = await request(options)
+	return response
 };
 
 export const getOrderStatus = async (orderId: string): Promise<OrderStatus> => {
-	// mock
-	return OrderStatus.delivering;
+	// // mock
+	// return OrderStatus.delivering;
 
 	// remote
-	const uri = `${RESTAURANT_BACKEND_URL}/get_order_status/${orderId}`;
-	const response = await fetch(uri);
-	const orderStatusResponse: OrderStatusResponse = await response.json();
+	const options = {
+		uri: `${RESTAURANT_BACKEND_URL}/get_order_status/${orderId}`,
+		json: true
+	}
+	const response: OrderStatusResponse = await request(options)
 
-	return mapOrderStatus(orderStatusResponse.status);
+	return mapOrderStatus(response.state);
 };
