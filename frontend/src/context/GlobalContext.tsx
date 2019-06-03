@@ -1,15 +1,15 @@
-import React, { useReducer, useContext } from 'react';
-import { globalReducer } from './reducers';
-import { PizzaModel, GlobalModel } from './models';
-import openSocket from 'socket.io-client';
-import { ActionTypes } from './actions';
+import React, { useReducer, useContext } from "react";
+import { globalReducer } from "./reducers";
+import { PizzaModel, GlobalModel } from "./models";
+import openSocket from "socket.io-client";
+import { ActionTypes } from "./actions";
 
 const initialState: GlobalModel = {
   menu: [],
   orders: [],
   socket: process.env.REACT_APP_WEBSOCKET
     ? openSocket(process.env.REACT_APP_WEBSOCKET)
-    : openSocket(''),
+    : openSocket(""),
   isAdmin: false
 };
 
@@ -19,11 +19,11 @@ const DispatchContext = React.createContext<React.Dispatch<ActionTypes>>(
 );
 
 const defaultPizza: PizzaModel = {
-  id: 1,
-  ingredients: ['ser', 'szynka'],
-  name: 'margherita',
+  pizza_id: 1,
+  ingredients: ["ser", "szynka"],
+  name: "margherita",
   pizza_img:
-    'http://www.kingcoconutnegombo.com/media/k2/items/cache/802a9daf23bff040c546f525d4bd22bc_XL.jpg',
+    "http://www.kingcoconutnegombo.com/media/k2/items/cache/802a9daf23bff040c546f525d4bd22bc_XL.jpg",
   price_big: 25,
   price_small: 20
 };

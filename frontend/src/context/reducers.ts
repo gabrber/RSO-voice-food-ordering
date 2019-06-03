@@ -1,5 +1,5 @@
-import { ActionTypes, SET_NEW_MENU, ADD_NEW_ORDER, SET_ADMIN } from './actions';
-import { GlobalModel } from './models';
+import { ActionTypes, SET_NEW_MENU, ADD_NEW_ORDER, SET_ADMIN } from "./actions";
+import { GlobalModel } from "./models";
 
 export const globalReducer: React.Reducer<GlobalModel, ActionTypes> = (
   state,
@@ -13,12 +13,12 @@ export const globalReducer: React.Reducer<GlobalModel, ActionTypes> = (
 
     case ADD_NEW_ORDER:
       let isOldOrder = state.orders.some(
-        value => value.id === action.payload.id
+        value => value.order_id === action.payload.order_id
       );
 
       if (isOldOrder) {
         let newOrders = state.orders.map((value, index, orders) => {
-          if (action.payload.id === value.id) {
+          if (action.payload.order_id === value.order_id) {
             return action.payload;
           } else {
             return value;

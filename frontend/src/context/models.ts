@@ -1,5 +1,5 @@
 export interface PizzaModel {
-  id: number;
+  pizza_id: number;
   name: string;
   price_small: number;
   price_big: number;
@@ -8,10 +8,10 @@ export interface PizzaModel {
 }
 
 export interface OrdersModel {
-  id: number;
+  order_id: number;
   orders: [
     {
-      id: number;
+      pizza_id: number;
       name: string;
       size: string;
     }
