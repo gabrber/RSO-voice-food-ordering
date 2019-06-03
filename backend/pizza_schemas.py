@@ -21,10 +21,10 @@ menu_schema = {
 
 new_order_schema_w_id = {
     "type": "object",
-    "required": ["order_id", "state", "orders"],
+    "required": ["order_id", "status", "orders"],
     "properties": {
         "order_id": {"type": "string"},
-        "state": {"type": "string"},
+        "status": {"type": "string"},
         "orders": {
             "type": "array",
             "items": {
@@ -53,7 +53,7 @@ new_order_schema_wo_id = {
     "type": "object",
     "required": ["orders"],
     "properties": {
-        "state": {"type": "string"},
+        "status": {"type": "string"},
         "orders": {
             "type": "array",
             "items": {
@@ -106,10 +106,10 @@ test_schema = {
 
 update_order_schema = {
     "type": "object",
-    "required": ["order_id", "state"],
+    "required": ["order_id", "status"],
     "properties": {
         "order_id": {"type": "integer"},
-        "state": {"type": "string"}
+        "status": {"type": "string"}
     }
 }
 
