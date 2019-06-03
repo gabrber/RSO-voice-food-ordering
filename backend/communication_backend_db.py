@@ -97,7 +97,7 @@ def get_state(order_id):
     return dumps(answer)
 
 
-@socketio.on("login", namespace="/")
+@sio.on("login", namespace="/")
 def login(credentials):
     if credentials["login"] == "rwUser" and credentials["password"]:
         print("succesfully validated login attempt")
