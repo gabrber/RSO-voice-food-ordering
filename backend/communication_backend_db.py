@@ -98,7 +98,7 @@ def get_state(order_id):
 
 
 @sio.on("login", namespace="/")
-def login(credentials):
+def login(arg_sid, credentials):
     if credentials["login"] == "rwUser" and credentials["password"]:
         print("succesfully validated login attempt")
         emit("user", "admin")
@@ -115,7 +115,7 @@ def connect(arg_sid,arg2):
 
     
 @sio.on("get_orders")
-def send_all_orders():
+def send_all_orders(arg_sid):
     orders = list(mongo.db.orders.find({}))
     for o in orders:
         if '_id' in o:
