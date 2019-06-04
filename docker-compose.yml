@@ -1,0 +1,27 @@
+version: "3"
+services:
+  backend:
+    build:
+      context: backend
+    container_name: backend
+    ports:
+      - "5000:5000"
+  db-backend:
+    build:
+      context: db-backend
+    container_name: db-backend
+    ports:
+      - "27017-27019:27017-27019"
+  db-nlp:
+    build:
+      context: db-nlp
+    container_name: db-nlp
+    ports:
+      - "37017:37017"
+  frontend:
+    build:
+      context: frontend
+    container_name: frontend
+    ports:
+      - "80:80"
+      # - "443:443"

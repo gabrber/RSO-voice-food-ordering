@@ -1,0 +1,18 @@
+{
+    "compilerOptions": {
+        "lib" :["es6"],
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "outDir": "dist",
+        "baseUrl": ".",
+        "target": "es2018",
+        "sourceMap": true,
+        "module": "commonjs"
+    },
+    "exclude": [
+        "node_modules"
+    ],
+    "include": [
+        "src/*", "src/**/*"
+    ]
+}

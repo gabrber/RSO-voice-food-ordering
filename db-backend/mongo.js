@@ -1,0 +1,2 @@
+db.createUser({user: "rwUser", pwd: "pizza123", roles: [{role: "readWrite", db: "pizza_db"}]})
+db.createUser({user: "pizzaAdmin", pwd: "pizza123", roles: [{role: "userAdminAnyDatabase", db: "admin"}]})
